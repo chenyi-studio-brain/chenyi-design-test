@@ -1,0 +1,3422 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="CHENYI DESIGN — 專注於展覽、品牌、書籍與家居設計">
+<meta property="og:title" content="CHENYI DESIGN">
+<meta property="og:description" content="專注於展覽、品牌、書籍與家居設計">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --ink: rgba(10, 10, 10, 0.92);
+  --ink-soft: rgba(10, 10, 10, 0.42);
+  --ink-ghost: rgba(10, 10, 10, 0.12);
+  --paper: #ffffff;
+  --accent: #3d6b3f;
+  --accent-light: rgba(61, 107, 63, 0.08);
+  --sidebar-w: 0px;
+  --gap: 28px;
+  --font-sans: 'Inter', 'Noto Sans TC', sans-serif;
+  --font-serif: 'Inter', 'Noto Sans TC', sans-serif;
+  --font-mono: 'Inter', 'Noto Sans TC', monospace;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* no grain on white */
+
+/* ── LAYOUT ── */
+.site-wrapper {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ── MAIN CONTENT ── */
+.main {
+  margin-left: 0;
+  flex: 1;
+  padding: 48px 48px 60px;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* ── HERO AREA ── */
+.hero {
+  margin-bottom: 48px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid var(--ink-ghost);
+}
+
+.hero-title {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-style: normal;
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  color: var(--ink);
+  line-height: 1.2;
+  margin-bottom: 16px;
+  letter-spacing: 0.01em;
+}
+
+.hero-subtitle {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--ink-soft);
+  letter-spacing: 0.08em;
+  line-height: 2.2;
+}
+
+/* ── SCROLL PROGRESS BAR ── */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  z-index: 250;
+  pointer-events: none;
+}
+
+.scroll-progress-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--accent);
+  transition: width 0.1s linear;
+}
+
+
+
+/* ── FILTER BAR ── */
+.filter-bar-wrap {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--paper);
+  padding-top: 12px;
+  margin-bottom: 20px;
+  transition: box-shadow 0.3s;
+}
+
+.filter-bar-wrap.scrolled {
+  box-shadow: 0 8px 16px -12px rgba(20,20,18,0.18);
+  border-bottom: 1px solid var(--ink-ghost);
+}
+
+.filter-bar {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding-bottom: 16px;
+}
+
+.filter-btn {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  padding: 5px 14px;
+  border: 1px solid var(--ink-ghost);
+  background: transparent;
+  color: var(--ink-soft);
+  cursor: pointer;
+  border-radius: 100px;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.filter-btn:hover,
+.filter-btn.active {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+
+.filter-count {
+  margin-left: 5px;
+  opacity: 0.6;
+  font-size: 0.9em;
+}
+
+/* ── EMPTY STATE ── */
+.empty-state {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 80px 20px;
+  color: var(--ink-soft);
+}
+
+.empty-state.show { display: flex; }
+
+.empty-state-icon {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 2.5rem;
+  opacity: 0.25;
+  margin-bottom: 12px;
+}
+
+.empty-state p {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+}
+
+/* ── MASONRY GRID ── */
+.grid {
+  columns: 2;
+  column-gap: var(--gap);
+}
+
+@media (min-width: 1200px) {
+  .grid { columns: 3; }
+}
+
+.grid-item {
+  break-inside: avoid;
+  margin-bottom: var(--gap);
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeUp 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.grid-item:nth-child(1)  { animation-delay: 0.05s; }
+.grid-item:nth-child(2)  { animation-delay: 0.10s; }
+.grid-item:nth-child(3)  { animation-delay: 0.15s; }
+.grid-item:nth-child(4)  { animation-delay: 0.20s; }
+.grid-item:nth-child(5)  { animation-delay: 0.25s; }
+.grid-item:nth-child(6)  { animation-delay: 0.30s; }
+.grid-item:nth-child(7)  { animation-delay: 0.35s; }
+.grid-item:nth-child(8)  { animation-delay: 0.40s; }
+.grid-item:nth-child(9)  { animation-delay: 0.45s; }
+.grid-item:nth-child(10) { animation-delay: 0.50s; }
+.grid-item:nth-child(11) { animation-delay: 0.55s; }
+.grid-item:nth-child(12) { animation-delay: 0.60s; }
+.grid-item:nth-child(n+13) { animation-delay: 0.65s; }
+
+@keyframes fadeUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.grid-item.hidden {
+  display: none;
+}
+
+.card {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.card-img-wrap {
+  position: relative;
+  overflow: hidden;
+  background: var(--ink-ghost);
+}
+
+.card-img-wrap::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(20,20,18,0.55) 0%, rgba(20,20,18,0.05) 45%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.35s;
+}
+
+.card:hover .card-img-wrap::after { opacity: 1; }
+
+.card-img {
+  width: 100%;
+  display: block;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  object-fit: cover;
+}
+
+.card:hover .card-img { transform: scale(1.04); }
+
+/* Overlay info that rises on hover (desktop) */
+.card-overlay {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  padding: 14px 16px;
+  transform: translateY(8px);
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+
+.card:hover .card-overlay {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.card-overlay .card-title,
+.card-overlay .card-sub {
+  color: #fff;
+}
+
+.card-overlay .card-sub { opacity: 0.85; }
+
+.card-view-tag {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.06em;
+  color: #fff;
+  background: rgba(20,20,18,0.45);
+  backdrop-filter: blur(4px);
+  padding: 4px 10px;
+  border-radius: 100px;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card:hover .card-view-tag {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.card-meta {
+  padding: 10px 0 4px;
+}
+
+.card-title {
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: 0.02em;
+  line-height: 1.4;
+  margin-bottom: 2px;
+}
+
+.card-sub {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+
+.card-tag {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.05em;
+  padding: 2px 7px;
+  border-radius: 100px;
+  margin-top: 6px;
+  background: var(--accent-light);
+  color: var(--accent);
+}
+
+.subpage.open .subpage-hero,
+.subpage.open .subpage-image-row,
+.subpage.open .subpage-text,
+.subpage.open .subpage-related {
+  animation: subpageFadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.subpage.open .subpage-hero { animation-delay: 0.05s; }
+.subpage.open .subpage-image-row { animation-delay: 0.1s; }
+.subpage.open .subpage-text { animation-delay: 0.15s; }
+.subpage.open .subpage-related { animation-delay: 0.2s; }
+
+@keyframes subpageFadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.back-to-top {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--paper);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  opacity: 0;
+  transform: translateY(10px) scale(0.9);
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 150;
+  box-shadow: 0 6px 18px rgba(20,20,18,0.25);
+}
+
+.back-to-top.show {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.back-to-top:hover {
+  background: var(--accent);
+}
+
+@media (max-width: 600px) {
+  .back-to-top {
+    bottom: 20px;
+    right: 20px;
+    width: 38px;
+    height: 38px;
+  }
+}
+
+/* ── LIGHTBOX ── */
+.lightbox {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 20, 18, 0.92);
+  z-index: 300;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.lightbox.open { display: flex; }
+
+.lightbox-inner {
+  position: relative;
+  max-width: 900px;
+  width: 100%;
+  max-height: 90vh;
+}
+
+.lightbox-img {
+  width: 100%;
+  max-height: 80vh;
+  object-fit: contain;
+  display: block;
+}
+
+.lightbox-caption {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: rgba(247,245,240,0.7);
+  margin-top: 12px;
+  line-height: 1.6;
+}
+
+.lightbox-close {
+  position: absolute;
+  top: -40px;
+  right: 0;
+  background: none;
+  border: none;
+  color: rgba(247,245,240,0.8);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  cursor: pointer;
+  letter-spacing: 0.08em;
+  padding: 4px 8px;
+  transition: color 0.2s;
+}
+
+.lightbox-close:hover { color: #fff; }
+
+/* ── FOOTER ── */
+.site-footer {
+  margin-top: 60px;
+  padding-top: 24px;
+  border-top: 1px solid var(--ink-ghost);
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--ink-soft);
+  line-height: 1.7;
+}
+
+.site-footer a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.site-footer a:hover { text-decoration: underline; }
+
+/* ── RWD ── */
+@media (max-width: 900px) {
+  .main { padding: 32px 24px 60px; }
+  .grid { columns: 2; }
+}
+
+@media (max-width: 560px) {
+  :root { --gap: 16px; }
+  .main { padding: 24px 16px 60px; }
+  .grid { columns: 1; }
+  .hero-title { font-size: 1rem; }
+  .filter-bar { gap: 6px; }
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--ink-ghost); border-radius: 10px; }
+
+/* ── SUBPAGE PANEL ── */
+.subpage {
+  position: fixed;
+  inset: 0;
+  left: 0;
+  background: var(--paper);
+  z-index: 200;
+  overflow-y: auto;
+  transform: translateX(100%);
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  padding: 0 0 80px;
+}
+
+.subpage.open {
+  transform: translateX(0);
+}
+
+@media (max-width: 900px) {
+  .subpage { left: 0; }
+}
+
+.subpage-header {
+  position: sticky;
+  top: 0;
+  background: var(--paper);
+  border-bottom: 1px solid var(--ink-ghost);
+  padding: 16px 40px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  z-index: 10;
+}
+
+@media (max-width: 600px) {
+  .subpage-header { padding: 14px 20px; }
+}
+
+.back-btn {
+  background: none;
+  border: 1px solid var(--ink-ghost);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  color: var(--ink-soft);
+  cursor: pointer;
+  padding: 5px 14px;
+  border-radius: 100px;
+  transition: all 0.2s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.back-btn:hover {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+
+.subpage-header-title {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--ink-soft);
+  letter-spacing: 0.06em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── SUBPAGE CONTENT ── */
+.subpage-body {
+  padding: 48px 40px;
+  max-width: 880px;
+}
+
+@media (max-width: 600px) {
+  .subpage-body { padding: 32px 20px; }
+}
+
+.subpage-title {
+  font-family: var(--font-sans);
+  font-weight: 800;
+  font-style: normal;
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  color: var(--ink);
+  line-height: 1.1;
+  margin-bottom: 6px;
+  letter-spacing: -0.02em;
+}
+
+.subpage-subtitle {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--ink-soft);
+  letter-spacing: 0.08em;
+  margin-bottom: 40px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid var(--ink-ghost);
+}
+
+.subpage-hero {
+  width: 100%;
+  display: block;
+  margin-bottom: 12px;
+  object-fit: cover;
+}
+
+.subpage-image-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+@media (max-width: 600px) {
+  .subpage-image-row { grid-template-columns: 1fr; }
+}
+
+.subpage-image-row img {
+  width: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.subpage-text {
+  margin-top: 40px;
+  padding-top: 32px;
+  border-top: 1px solid var(--ink-ghost);
+}
+
+.subpage-text h2 {
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 20px;
+}
+
+.subpage-text p {
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 400;
+  line-height: 1.85;
+  color: var(--ink);
+  margin-bottom: 1.4em;
+}
+
+.subpage-related {
+  margin-top: 56px;
+  padding-top: 32px;
+  border-top: 1px solid var(--ink-ghost);
+}
+
+.subpage-related h2 {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 20px;
+}
+
+.related-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+@media (max-width: 700px) {
+  .related-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+.related-item {
+  cursor: pointer;
+}
+
+.related-item img {
+  width: 100%;
+  aspect-ratio: 4/3;
+  object-fit: cover;
+  display: block;
+  transition: opacity 0.2s;
+}
+
+.related-item:hover img { opacity: 0.8; }
+
+.related-item p {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  color: var(--ink-soft);
+  margin-top: 6px;
+  line-height: 1.4;
+}
+
+/* Language controls follow the same type and colors as the project navigation. */
+.language-switch {
+  display: flex;
+  gap: 2px;
+  width: max-content;
+  border: 1px solid var(--ink-ghost);
+  border-radius: 100px;
+  padding: 2px;
+  flex: 0 0 auto;
+}
+.hero .language-switch { margin: 0 0 14px auto; }
+.subpage-header .language-switch { margin-left: auto; }
+.language-switch button {
+  font: 600 0.7rem var(--font-sans);
+  color: var(--ink);
+  background: transparent;
+  border: 0;
+  border-radius: 100px;
+  min-width: 34px;
+  min-height: 30px;
+  padding: 3px 8px;
+  cursor: pointer;
+}
+.language-switch button[aria-pressed="true"] {
+  background: var(--ink);
+  color: var(--paper);
+}
+.language-switch button:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+.subpage:not(.open) { visibility: hidden; }
+@media (max-width: 600px) {
+  .subpage-header { gap: 8px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Scroll progress -->
+<div class="scroll-progress"><div class="scroll-progress-fill" id="scrollProgressFill"></div></div>
+
+<!-- Mobile toggle -->
+<!-- Back to top -->
+<button class="back-to-top" id="backToTop" aria-label="回到頂部">↑</button>
+
+<div class="site-wrapper">
+
+  <!-- ── MAIN ── -->
+  <main class="main">
+
+    <section class="hero">
+      <div class="language-switch" role="group" aria-label="網站語言">
+        <button type="button" data-language="zh-TW" lang="zh-Hant" aria-pressed="true">繁中</button>
+        <button type="button" data-language="en" lang="en" aria-pressed="false" aria-label="English">EN</button>
+      </div>
+      <h1 class="hero-title">CHENYI DESIGN</h1>
+      <p class="hero-subtitle">— 專注於 展覽・品牌・書籍・家居設計</p>
+    </section>
+
+    <div class="filter-bar-wrap" id="filterBarWrap">
+      <div class="filter-bar">
+        <button class="filter-btn active" data-filter="all">全部</button>
+        <button class="filter-btn" data-filter="展覽">展覽</button>
+        <button class="filter-btn" data-filter="建案">建案</button>
+        <button class="filter-btn" data-filter="書籍">書籍</button>
+        <button class="filter-btn" data-filter="品牌">品牌</button>
+        <button class="filter-btn" data-filter="插畫">插畫</button>
+        <button class="filter-btn" data-filter="飯店">飯店</button>
+      </div>
+    </div>
+
+    <div class="grid" id="grid">
+
+      <div class="empty-state" id="emptyState">
+        <div class="empty-state-icon">∅</div>
+        <p>這個分類目前沒有作品</p>
+      </div>
+
+      <!-- 1 -->
+      <div class="grid-item" data-tags="品牌 藝廊">
+        <a class="card" href="https://sunseed.cargo.site/p-samia-art" target="_blank"
+           data-subpage="samia"
+           data-img="https://freight.cargo.site/w/900/q/75/i/W2831742168826047917638297927171/freepik_kling_1080p_16-9_24fps_36747.jpg"
+           data-caption="DUBAI SAMIA ART｜杜拜藝廊品牌設計">
+          <div class="card-img-wrap">
+            <img class="card-img" loading="lazy"
+                 src="https://freight.cargo.site/w/900/q/75/i/W2831742168826047917638297927171/freepik_kling_1080p_16-9_24fps_36747.jpg"
+                 alt="DUBAI SAMIA ART">
+          </div>
+          <div class="card-meta">
+            <div class="card-title">DUBAI SAMIA ART</div>
+            <div class="card-sub">杜拜藝廊品牌設計</div>
+            <span class="card-tag">品牌</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- 2 -->
+      <div class="grid-item" data-tags="展覽">
+        <a class="card" href="https://sunseed.cargo.site/p-snow-in-desert-ok" target="_blank"
+           data-subpage="snow"
+           data-img="https://freight.cargo.site/w/900/q/75/i/D2831581970346089308103563623939/3.jpg"
+           data-caption="SNOW in Desert｜展覽視覺設計">
+          <div class="card-img-wrap">
+            <img class="card-img" loading="lazy"
+                 src="https://freight.cargo.site/w/900/q/75/i/D2831581970346089308103563623939/3.jpg"
+                 alt="SNOW in Desert">
+          </div>
+          <div class="card-meta">
+            <div class="card-title">SNOW in Desert</div>
+            <div class="card-sub">展覽視覺設計</div>
+            <span class="card-tag">展覽</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- 3 -->
+      <div class="grid-item" data-tags="展覽">
+        <a class="card" href="https://sunseed.cargo.site/p-growth-unbound" target="_blank"
+           data-subpage="growth"
+           data-img="https://freight.cargo.site/w/900/q/75/i/I2831582142841593141361580785155/5.jpg"
+           data-caption="GROWTH UNBOUND｜展覽視覺設計">
+          <div class="card-img-wrap">
+            <img class="card-img" loading="lazy"
+                 src="https://freight.cargo.site/w/900/q/75/i/I2831582142841593141361580785155/5.jpg"
+                 alt="GROWTH UNBOUND">
+          </div>
+          <div class="card-meta">
+            <div class="card-title">GROWTH UNBOUND</div>
+            <div class="card-sub">展覽視覺設計</div>
+            <span class="card-tag">展覽</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- 4 -->
+      <div class="grid-item" data-tags="建案">
+        <a class="card" href="https://sunseed.cargo.site/p-%E6%BE%84%E5%9F%95-1" target="_blank"
+           data-subpage="chengting"
+           data-img="https://freight.cargo.site/w/900/q/75/i/S2831771049140803437680855694851/freepik_-_veo3_1_1080p_16-9_24fps_24087.jpg"
+           data-caption="品泓建設「澄埕」｜建案視覺設計／接待中心">
+          <div class="card-img-wrap">
+            <img class="card-img" loading="lazy"
+                 src="https://freight.cargo.site/w/900/q/75/i/S2831771049140803437680855694851/freepik_-_veo3_1_1080p_16-9_24fps_24087.jpg"
+                 alt="澄埕">
+          </div>
+          <div class="card-meta">
+            <div class="card-title">品泓建設「澄埕」</div>
+            <div class="card-sub">建案視覺設計／接待中心</div>
+            <span class="card-tag">建案</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- 5 -->
+      <div class="grid-item" data-tags="建案">
+        <a class="card" href="https://pinhong-36.netlify.app/" target="_blank" data-external="true"
+           data-img="https://freight.cargo.site/w/900/q/75/i/B2831814573624702800935478443523/freepik_-_seedance_720p_4-3_24fps_24089.jpg"
+           data-caption="品泓建設「叁拾睦」｜建案視覺設計">
+          <div class="card-img-wrap">
+            <img class="card-img" loading="lazy"
+                 src="https://freight.cargo.site/w/900/q/75/i/B2831814573624702800935478443523/freepik_-_seedance_720p_4-3_24fps_24089.jpg"
+                 alt="叁拾睦">
+          </div>
+          <div class="card-meta">
+            <div class="card-title">品泓建設「叁拾睦」</div>
+            <div class="card-sub">建案視覺設計</div>
+            <span class="card-tag">建案</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- 6 -->
+      <div class="grid-item" data-tags="插畫 書籍">
+        <a class="card" href="https://sunseed.cargo.site/p-%E5%9C%B0%E5%91%B3%E6%89%8B%E5%B8%96no-15%E9%9B%9C%E8%AA%8C%E7%89%8C%E5%8D%A1" target="_blank"
+           data-subpage="dimei15"
+           data-img="https://freight.cargo.site/w/900/q/75/i/G2834947295626370041472641744387/rrr1.jpg"
+           data-caption="地味手帖第15期 游牧聚落｜雜誌插畫牌卡設計">
+          <div class="card-img-wrap">
+            <img class="card-img" loading="lazy"
+                 src="https://freight.cargo.site/w/900/q/75/i/G2834947295626370041472641744387/rrr1.jpg"
+                 alt="地味手帖15">
+          </div>
+          <div class="card-meta">
+            <div class="card-title">地味手帖第15期 游牧聚落</div>
+            <div class="card-sub">雜誌插畫牌卡設計</div>
+            <span class="card-tag">插畫</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- 7 -->
+      <div class="grid-item" data-tags="展覽">
+        <a class="card" href="https://sunseed.cargo.site/p-qinglu-liu-solo-(%E5%8A%89%E6%B8%85%E8%B7%AF)" target="_blank"
+           data-subpage="qinglu"
+           data-img="https://freight.cargo.site/w/900/q/75/i/F2831582232935491197359030877699/7.jpg"
+           data-caption="Qinglu Liu Solo｜展覽視覺設計">
+          <div class="card-img-wrap">
+            <img class="card-img" loading="lazy"
+                 src="https://freight.cargo.site/w/900/q/75/i/F2831582232935491197359030877699/7.jpg"
+                 alt="Qinglu Liu Solo">
+          </div>
+          <div class="card-meta">
+            <div class="card-title">Qinglu Liu Solo</div>
+            <div class="card-sub">展覽視覺設計</div>
+            <span class="card-tag">展覽</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- 8 -->
+      <div class="grid-item" data-tags="展覽">
+        <a class="card" href="https://sunseed.cargo.site/p-sanctuary-of-freedo" target="_blank"
+           data-subpage="sanctuary"
+           data-img="https://freight.cargo.site/w/900/q/75/i/H2831582316240987434231365975555/8.jpg"
+           data-caption="SANCTUARY OF FREEDOM｜展覽視覺設計">
+          <div class="card-img-wrap">
+            <img class="card-img" loading="lazy"
+                 src="https://freight.cargo.site/w/900/q/75/i/H2831582316240987434231365975555/8.jpg"
+                 alt="SANCTUARY OF FREEDOM">
+          </div>
+          <div class="card-meta">
+            <div class="card-title">SANCTUARY OF FREEDOM</div>
+            <div class="card-sub">展覽視覺設計</div>
+            <span class="card-tag">展覽</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- 9 -->
+      <div class="grid-item" data-tags="飯店">
+        <a class="card" href="https://sunseed.cargo.site/p-%E7%94%B0%E4%B8%AD%E5%A4%AE" target="_blank"
+           data-subpage="tajunyang"
+           data-img="https://freight.cargo.site/w/900/q/75/i/O2831774721223465726599038582275/gg.jpg"
+           data-caption="台中「田中央飯店」｜客房手冊／軟裝設計">
+          <div class="card-img-wrap">
+            <img class="card-img" loading="lazy"
+                 src="https://freight.cargo.site/w/900/q/75/i/O2831774721223465726599038582275/gg.jpg"
+                 alt="田中央飯店">
+          </div>
+          <div class="card-meta">
+            <div class="card-title">台中「田中央飯店」</div>
+            <div class="card-sub">客房手冊／軟裝設計</div>
+            <span class="card-tag">飯店</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- 10 -->
+      <div class="grid-item" data-tags="品牌">
+        <a class="card" href="https://sunseed.cargo.site/p-8%E8%B1%86" target="_blank"
+           data-subpage="8dou"
+           data-img="https://freight.cargo.site/w/900/q/75/i/G2831775834558257551265316814339/jj.jpg"
+           data-caption="「8豆珈琲」｜視覺設計">
+          <div class="card-img-wrap">
+            <img class="card-img" loading="lazy"
+                 src="https://freight.cargo.site/w/900/q/75/i/G2831775834558257551265316814339/jj.jpg"
+                 alt="8豆珈琲">
+          </div>
+          <div class="card-meta">
+            <div class="card-title">「8豆珈琲」</div>
+            <div class="card-sub">視覺設計</div>
+            <span class="card-tag">品牌</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- 11 -->
+      <div class="grid-item" data-tags="書籍">
+        <a class="card" href="https://sunseed.cargo.site/p-%E5%B0%8F%E6%9B%B8%E5%BA%97-%E7%AC%AC7%E5%B9%B4" target="_blank"
+           data-subpage="book7"
+           data-img="https://freight.cargo.site/w/900/q/75/i/V2863677211845401097137228430851/book10.jpg"
+           data-caption="開一間小書店第七年｜全書設計／插畫繪圖">
+          <div class="card-img-wrap">
+            <img class="card-img" loading="lazy"
+                 src="https://freight.cargo.site/w/900/q/75/i/V2863677211845401097137228430851/book10.jpg"
+                 alt="小書店第七年">
+          </div>
+          <div class="card-meta">
+            <div class="card-title">開一間小書店第七年</div>
+            <div class="card-sub">全書設計／插畫繪圖</div>
+            <span class="card-tag">書籍</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- 12 -->
+      <div class="grid-item" data-tags="品牌 飯店">
+        <a class="card" href="https://sunseed.cargo.site/p-%E8%90%A9%E6%9D%A1" target="_blank"
+           data-subpage="akijo"
+           data-img="https://freight.cargo.site/w/900/q/75/i/O2831774630096550002473853599235/ffff.jpg"
+           data-caption="「AKIJO萩条」｜視覺／軟裝設計">
+          <div class="card-img-wrap">
+            <img class="card-img" loading="lazy"
+                 src="https://freight.cargo.site/w/900/q/75/i/O2831774630096550002473853599235/ffff.jpg"
+                 alt="AKIJO萩条">
+          </div>
+          <div class="card-meta">
+            <div class="card-title">「AKIJO萩条」</div>
+            <div class="card-sub">視覺／軟裝設計</div>
+            <span class="card-tag">品牌</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- 13 -->
+      <div class="grid-item" data-tags="書籍">
+        <a class="card" href="https://sunseed.cargo.site/p-%E5%B0%8F%E6%9B%B8%E5%BA%97-%E7%AC%AC8%E5%B9%B4" target="_blank"
+           data-subpage="book8"
+           data-img="https://freight.cargo.site/w/900/q/75/i/D2863628671654894604108102188547/book088.jpg"
+           data-caption="開一間小書店第八年｜全書設計／插畫繪圖">
+          <div class="card-img-wrap">
+            <img class="card-img" loading="lazy"
+                 src="https://freight.cargo.site/w/900/q/75/i/D2863628671654894604108102188547/book088.jpg"
+                 alt="小書店第八年">
+          </div>
+          <div class="card-meta">
+            <div class="card-title">開一間小書店第八年</div>
+            <div class="card-sub">全書設計／插畫繪圖</div>
+            <span class="card-tag">書籍</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- 14 -->
+      <div class="grid-item" data-tags="書籍">
+        <a class="card" href="https://sunseed.cargo.site/p-%E5%B0%8F%E6%9B%B8%E5%BA%97-%E7%AC%AC9%E5%B9%B4" target="_blank"
+           data-subpage="book9"
+           data-img="https://freight.cargo.site/w/900/q/75/i/F2863676803047105679659855068675/book09099-.jpg"
+           data-caption="開一間小書店第九年｜全書設計／插畫繪圖">
+          <div class="card-img-wrap">
+            <img class="card-img" loading="lazy"
+                 src="https://freight.cargo.site/w/900/q/75/i/F2863676803047105679659855068675/book09099-.jpg"
+                 alt="小書店第九年">
+          </div>
+          <div class="card-meta">
+            <div class="card-title">開一間小書店第九年</div>
+            <div class="card-sub">全書設計／插畫繪圖</div>
+            <span class="card-tag">書籍</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- 15 -->
+      <div class="grid-item" data-tags="書籍">
+        <a class="card" href="https://sunseed.cargo.site/p-%E5%B0%8F%E6%9B%B8%E5%BA%97-%E7%AC%AC10%E5%B9%B4" target="_blank"
+           data-subpage="book10v"
+           data-img="https://freight.cargo.site/w/900/q/75/i/C2863633165908940258261000601091/book10101.jpg"
+           data-caption="開一間小書店第十年｜全書設計／插畫繪圖">
+          <div class="card-img-wrap">
+            <img class="card-img" loading="lazy"
+                 src="https://freight.cargo.site/w/900/q/75/i/C2863633165908940258261000601091/book10101.jpg"
+                 alt="小書店第十年">
+          </div>
+          <div class="card-meta">
+            <div class="card-title">開一間小書店第十年</div>
+            <div class="card-sub">全書設計／插畫繪圖</div>
+            <span class="card-tag">書籍</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- 16 -->
+      <div class="grid-item" data-tags="插畫 書籍">
+        <a class="card" href="https://sunseed.cargo.site/p-%E5%9C%B0%E5%91%B3%E6%89%8B%E5%B8%96no-13" target="_blank"
+           data-subpage="dimei13"
+           data-img="https://freight.cargo.site/w/900/q/75/i/L2863667557631209656801132887555/book12.jpg"
+           data-caption="地味手帖第13期「地區賽隊：地方愛的熱力展現」｜插畫設計">
+          <div class="card-img-wrap">
+            <img class="card-img" loading="lazy"
+                 src="https://freight.cargo.site/w/900/q/75/i/L2863667557631209656801132887555/book12.jpg"
+                 alt="地味手帖13">
+          </div>
+          <div class="card-meta">
+            <div class="card-title">地味手帖第13期</div>
+            <div class="card-sub">「地區賽隊」插畫設計</div>
+            <span class="card-tag">插畫</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- 17 -->
+      <div class="grid-item" data-tags="插畫 書籍">
+        <a class="card" href="https://sunseed.cargo.site/p-%E5%9C%B0%E5%91%B3%E6%89%8B%E5%B8%96no-14" target="_blank"
+           data-subpage="dimei14a"
+           data-img="https://freight.cargo.site/w/900/q/75/i/Y2863656382132481201712025124355/book11.jpg"
+           data-caption="地味手帖第14期「成為望族」｜內容插畫設計">
+          <div class="card-img-wrap">
+            <img class="card-img" loading="lazy"
+                 src="https://freight.cargo.site/w/900/q/75/i/Y2863656382132481201712025124355/book11.jpg"
+                 alt="地味手帖14">
+          </div>
+          <div class="card-meta">
+            <div class="card-title">地味手帖第14期「成為望族」</div>
+            <div class="card-sub">內容插畫設計</div>
+            <span class="card-tag">插畫</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- 18 -->
+      <div class="grid-item" data-tags="插畫 書籍">
+        <a class="card" href="https://sunseed.cargo.site/p-%E5%9C%B0%E5%91%B3%E6%89%8B%E5%B8%96no-14-1-%E6%9C%9B%E6%97%8F%E5%A5%B3%E5%AD%90" target="_blank"
+           data-subpage="dimei14b"
+           data-img="https://freight.cargo.site/w/900/q/75/i/A2863714376205538494591516360195/book12a.jpg"
+           data-caption="地味手帖第14期「台灣望族女子圖鑑」｜插畫設計">
+          <div class="card-img-wrap">
+            <img class="card-img" loading="lazy"
+                 src="https://freight.cargo.site/w/900/q/75/i/A2863714376205538494591516360195/book12a.jpg"
+                 alt="台灣望族女子圖鑑">
+          </div>
+          <div class="card-meta">
+            <div class="card-title">地味手帖14期「台灣望族女子圖鑑」</div>
+            <div class="card-sub">插畫設計</div>
+            <span class="card-tag">插畫</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- 19 -->
+      <div class="grid-item" data-tags="展覽">
+        <a class="card" href="https://sunseed.cargo.site/p-%E4%BA%91%E7%AB%A0%E5%AF%84%E6%9C%88%C2%B7%E6%98%9F%E6%B2%99%E8%BD%BD%E9%81%93" target="_blank"
+           data-subpage="moon"
+           data-img="https://freight.cargo.site/w/900/q/75/i/K2831806336268030174082623421955/2aaa1.jpg"
+           data-caption="Sending Artistic Inscriptions to the Moon｜展覽視覺設計">
+          <div class="card-img-wrap">
+            <img class="card-img" loading="lazy"
+                 src="https://freight.cargo.site/w/900/q/75/i/K2831806336268030174082623421955/2aaa1.jpg"
+                 alt="Sending Artistic Inscriptions to the Moon">
+          </div>
+          <div class="card-meta">
+            <div class="card-title">Sending Artistic Inscriptions to the Moon</div>
+            <div class="card-sub">展覽視覺設計</div>
+            <span class="card-tag">展覽</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- 20 -->
+      <div class="grid-item" data-tags="插畫 書籍">
+        <a class="card" href="https://sunseed.cargo.site/p-%E5%9C%B0%E5%91%B3%E6%89%8B%E5%B8%96no-15%E9%9B%9C%E8%AA%8C%E7%89%8C%E5%8D%A1" target="_blank"
+           data-img="https://freight.cargo.site/w/900/q/75/i/X2863675476228144689952935984643/book14.jpg"
+           data-caption="地味手帖第15期 游牧聚落｜雜誌插畫">
+          <div class="card-img-wrap">
+            <img class="card-img" loading="lazy"
+                 src="https://freight.cargo.site/w/900/q/75/i/X2863675476228144689952935984643/book14.jpg"
+                 alt="地味手帖15插畫">
+          </div>
+          <div class="card-meta">
+            <div class="card-title">地味手帖第15期 游牧聚落</div>
+            <div class="card-sub">雜誌插畫</div>
+            <span class="card-tag">插畫</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- 21 -->
+      <div class="grid-item" data-tags="貼圖">
+        <a class="card" href="https://sunseed.cargo.site/p-line" target="_blank"
+           data-subpage="line"
+           data-img="https://freight.cargo.site/w/900/q/75/i/M2890388386711993788453770837507/line1.jpg"
+           data-caption="LINE客製化貼圖設計">
+          <div class="card-img-wrap">
+            <img class="card-img" loading="lazy"
+                 src="https://freight.cargo.site/w/900/q/75/i/M2890388386711993788453770837507/line1.jpg"
+                 alt="LINE貼圖">
+          </div>
+          <div class="card-meta">
+            <div class="card-title">LINE 客製化貼圖設計</div>
+            <div class="card-sub">杉熹獨家設計</div>
+            <span class="card-tag">貼圖</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- 22 -->
+      <div class="grid-item" data-tags="飯店 展覽">
+        <a class="card" href="https://sunseed.cargo.site/p-%E7%94%B0%E4%B8%AD%E5%A4%AE" target="_blank"
+           data-subpage="tajunyang"
+           data-img="https://freight.cargo.site/w/900/q/75/i/V2831778105444686745279668502019/gg1.jpg"
+           data-caption="台中「田中央飯店」｜藝文空間設計">
+          <div class="card-img-wrap">
+            <img class="card-img" loading="lazy"
+                 src="https://freight.cargo.site/w/900/q/75/i/V2831778105444686745279668502019/gg1.jpg"
+                 alt="田中央飯店藝文空間">
+          </div>
+          <div class="card-meta">
+            <div class="card-title">台中「田中央飯店」</div>
+            <div class="card-sub">藝文空間設計</div>
+            <span class="card-tag">飯店</span>
+          </div>
+        </a>
+      </div>
+
+    </div><!-- /grid -->
+
+  </main>
+</div>
+
+<!-- ── SUBPAGE: SAMIA ART ── -->
+<div class="subpage" id="subpage-samia">
+  <div class="subpage-header">
+    <button class="back-btn" onclick="closeSubpage()">← 返回</button>
+    <span class="subpage-header-title">SUNSEED / 設計 / DUBAI SAMIA ART</span>
+    <div class="language-switch" role="group" aria-label="網站語言">
+        <button type="button" data-language="zh-TW" lang="zh-Hant" aria-pressed="true">繁中</button>
+        <button type="button" data-language="en" lang="en" aria-pressed="false" aria-label="English">EN</button>
+      </div>
+  </div>
+  <div class="subpage-body">
+    <h1 class="subpage-title">DUBAI SAMIA ART</h1>
+    <p class="subpage-subtitle">品牌識別設計 · 杜拜 2024</p>
+
+    <!-- Hero image -->
+    <img class="subpage-hero"
+         src="https://freight.cargo.site/w/2120/q/75/i/W2831848953227461343048435318275/1aaaa.jpg"
+         alt="SAMIA ART brand">
+
+    <div class="subpage-image-row">
+      <img src="https://freight.cargo.site/w/1232/q/75/i/L2831835421950387466733619330563/2.jpg"
+           alt="SAMIA ART 2">
+      <img src="https://freight.cargo.site/w/1232/q/75/i/G2831849765474496396627412073987/1111.jpg"
+           alt="SAMIA ART 3">
+    </div>
+
+    <!-- Text content -->
+    <div class="subpage-text">
+      <h2>專案說明</h2>
+      <p>在杜拜這充滿活力的藝術新興城市，「SAMIA ART」應運而生。「SAMIA ART」於2024年創立於杜拜，「SAMIA」是阿拉伯語中象徵著崇高與卓越的寓意，也是對藝廊空間賦予神聖使命的期許，將藝術體驗昇華為一種內心的平衡對話。</p>
+
+      <p>LOGO 設計靈感源自「窗」與「對畫的凝視」。Logo 中獨特的雙面透視造型，加幾何圖形的堆疊，是從「看畫的人」與「建築」的意象中汲取靈感，設計構築而成。Logo 的窗景、畫景的意象，都是隱喻藉由藝廊的場域，展開「藝術品與藝術創作」的深刻展覽演故事。</p>
+
+      <p>窗戶，是光明的入口。我們將藝廊視為一座收納藝術的容器，Logo 中的窗戶結構，代表著藝術作品作為通往未知世界的視窗。它邀請觀者打開視野，看見平凡之外的無限可能。</p>
+
+      <p>凝視，是靈魂的對話。透過視覺透視，巧妙地將「看畫的人」的視角也融入設計裡。雙面透視的結構象徵著觀者與藝術品之間的雙向凝視。在我們凝視藝術品的同時，藝術品也在凝視我們，從而引發深層的心靈共鳴。</p>
+
+      <p>這次的 LOGO 設計，從品牌核心中賦予 SAMIA ART 對藝術詮釋的品牌個性，使其不僅是展示作品的空間，更是引領觀者進入藝術殿堂的門戶。</p>
+
+      <p>很開心 SAMIA ART 的製作邀請，讓我曾經待過的第二故鄉阿聯酋，有更深刻與阿聯酋文化的連結。2024年7月開始和經營團隊討論，從LOGO提案為起點，設計了LOGO並通過提案，陸續完成藝廊招牌、名片、邀請卡等實體品牌。2025年開始，也陸續合作了相關展覽的視覺設計的製作。謝謝阿拉伯文化對設計師與美學的尊重，這是非常開心的合作過程，讓我更認識了這片土地。</p>
+    </div>
+
+    <!-- Related projects -->
+    <div class="subpage-related">
+      <h2>相關展覽視覺</h2>
+      <div class="related-grid">
+        <div class="related-item" onclick="openSubpage('subpage-snow')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/D2831581970346089308103563623939/3.jpg" alt="SNOW in Desert">
+          <p>SNOW in Desert<br>展覽視覺設計</p>
+        </div>
+        <div class="related-item" onclick="openSubpage('subpage-growth')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/I2831582142841593141361580785155/5.jpg" alt="GROWTH UNBOUND">
+          <p>GROWTH UNBOUND<br>展覽視覺設計</p>
+        </div>
+        <div class="related-item" onclick="openSubpage('subpage-sanctuary')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/H2831582316240987434231365975555/8.jpg" alt="SANCTUARY OF FREEDOM">
+          <p>SANCTUARY OF FREEDOM<br>展覽視覺設計</p>
+        </div>
+        <div class="related-item" onclick="openSubpage('subpage-qinglu')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/F2831582232935491197359030877699/7.jpg" alt="Qinglu Liu Solo">
+          <p>Qinglu Liu Solo<br>展覽視覺設計</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── SUBPAGE: SNOW IN DESERT ── -->
+<div class="subpage" id="subpage-snow">
+  <div class="subpage-header">
+    <button class="back-btn" onclick="closeSubpage()">← 返回</button>
+    <span class="subpage-header-title">SUNSEED / 設計 / SNOW in Desert</span>
+    <div class="language-switch" role="group" aria-label="網站語言">
+        <button type="button" data-language="zh-TW" lang="zh-Hant" aria-pressed="true">繁中</button>
+        <button type="button" data-language="en" lang="en" aria-pressed="false" aria-label="English">EN</button>
+      </div>
+  </div>
+  <div class="subpage-body">
+    <h1 class="subpage-title">SNOW in Desert</h1>
+    <p class="subpage-subtitle">SAMIA ART · 展覽視覺設計 · 杜拜</p>
+
+    <!-- Hero -->
+    <img class="subpage-hero"
+         src="https://freight.cargo.site/w/1500/q/75/i/T2833621317062146844613310234115/1aa.jpg"
+         alt="SNOW in Desert 主視覺">
+
+    <!-- Row 2 -->
+    <div class="subpage-image-row">
+      <img src="https://freight.cargo.site/w/1232/q/75/i/H2831942549793282056468188708355/3.jpg" alt="展覽視覺">
+      <img src="https://freight.cargo.site/w/1000/q/75/i/N2833606159575455662285552434691/ssss.jpg" alt="展覽視覺 2">
+    </div>
+
+    <!-- Row 3 — three across -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px;">
+      <img src="https://freight.cargo.site/w/700/q/75/i/Z2831873969465842255003796979203/7.jpg"
+           alt="展覽邀請卡/門票" style="width:100%;display:block;object-fit:cover;">
+      <img src="https://freight.cargo.site/w/700/q/75/i/D2831885290251127034629333270019/61.jpg"
+           alt="展覽主視覺" style="width:100%;display:block;object-fit:cover;">
+      <img src="https://freight.cargo.site/w/800/q/75/i/Y2831882884518998661798159269379/81.jpg"
+           alt="展覽旗幟" style="width:100%;display:block;object-fit:cover;">
+    </div>
+
+    <!-- Row 4 -->
+    <div class="subpage-image-row">
+      <img src="https://freight.cargo.site/w/1000/q/75/i/E2833640408962647788082784452099/ffaa.jpg" alt="展覽內容">
+      <img src="https://freight.cargo.site/w/900/q/75/i/K2833616693551765465977583648259/3-.jpg" alt="展覽說明">
+    </div>
+
+    <img class="subpage-hero" style="margin-top:12px;"
+         src="https://freight.cargo.site/w/1500/q/75/i/Y2880315509552041397696495435267/samia_1.jpg"
+         alt="展覽全覽">
+
+    <!-- Text -->
+    <div class="subpage-text">
+      <h2>關於展覽</h2>
+      <p>Winter has arrived, though its chill feels distant in Dubai. At Samia Art, the exhibition "Snow in the Desert" unveils snow's delicate beauty through the eyes of five artists from frostbound regions. Here, snow serves as both a fleeting sanctuary and a whispered elegy for a vanishing world.</p>
+
+      <p>The exhibition poses realist and abstract interpretations, capturing the graceful descent of snowflakes and the profound stillness of winter. Each piece invites you to feel the weight of snow not just visually, but spiritually, as it becomes a silent language reflecting nature's fragile soul.</p>
+
+      <p>In this desert oasis, let these artworks transport you to the north, where winter whispers of resilience and transience. Embrace the magic of snow, and ponder the impermanence that shadows all things.</p>
+
+      <h2 style="margin-top:2em;">設計說明</h2>
+      <p>在烈日之城，聽見雪落的聲音。在杜拜這座熱情的沙漠之都，冬天的寒意始終顯得遙遠。Samia Art 的第二檔展覽《Snow in Desert》，試圖打破地理與溫度的限制，邀請來自俄羅斯、吉爾吉斯、韓國與中國的藝術家，透過寫實與抽象的筆觸，將北國冰封大地的韌性與純淨帶進綠洲。</p>
+
+      <p>這是一場關於「自然靈魂」的轉譯視覺傳達，透過極簡且專業的設計架構，成功串聯起七位藝術家截然不同的創作風格，從寫實山巒的壯麗到抽象層次的冥想，讓《Snow in Desert》成為杜拜藝術季中一抹清冷而動人的藝術亮點。</p>
+    </div>
+
+    <!-- Related -->
+    <div class="subpage-related">
+      <h2>更多展覽設計</h2>
+      <div class="related-grid">
+        <div class="related-item" onclick="openSubpage('subpage-samia')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/W2831742168826047917638297927171/freepik_kling_1080p_16-9_24fps_36747.jpg" alt="SAMIA ART">
+          <p>DUBAI SAMIA ART<br>品牌識別設計</p>
+        </div>
+        <div class="related-item" onclick="openSubpage('subpage-growth')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/I2831582142841593141361580785155/5.jpg" alt="GROWTH UNBOUND">
+          <p>GROWTH UNBOUND<br>展覽視覺設計</p>
+        </div>
+        <div class="related-item" onclick="openSubpage('subpage-sanctuary')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/H2831582316240987434231365975555/8.jpg" alt="SANCTUARY OF FREEDOM">
+          <p>SANCTUARY OF FREEDOM<br>展覽視覺設計</p>
+        </div>
+        <div class="related-item" onclick="openSubpage('subpage-qinglu')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/F2831582232935491197359030877699/7.jpg" alt="Qinglu Liu Solo">
+          <p>Qinglu Liu Solo<br>展覽視覺設計</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SUBPAGE: GROWTH UNBOUND ── -->
+<div class="subpage" id="subpage-growth">
+  <div class="subpage-header">
+    <button class="back-btn" onclick="closeSubpage()">← 返回</button>
+    <span class="subpage-header-title">SUNSEED / 設計 / GROWTH UNBOUND</span>
+    <div class="language-switch" role="group" aria-label="網站語言">
+        <button type="button" data-language="zh-TW" lang="zh-Hant" aria-pressed="true">繁中</button>
+        <button type="button" data-language="en" lang="en" aria-pressed="false" aria-label="English">EN</button>
+      </div>
+  </div>
+  <div class="subpage-body">
+    <h1 class="subpage-title">GROWTH UNBOUND</h1>
+    <p class="subpage-subtitle">SAMIA ART · 展覽視覺設計 · 杜拜</p>
+
+    <!-- Hero -->
+    <img class="subpage-hero"
+         src="https://freight.cargo.site/w/1500/q/75/i/B2847825997324587385775523446275/ddd11aa.jpg"
+         alt="GROWTH UNBOUND 主視覺">
+
+    <div class="subpage-image-row">
+      <img src="https://freight.cargo.site/w/1500/q/75/i/B2847804712751852120820196392451/dddddd222.jpg" alt="展覽視覺 2">
+      <img src="https://freight.cargo.site/w/1500/q/75/i/Z2847843415349084336766574476803/ddd33a.jpg" alt="展覽視覺 3">
+    </div>
+
+    <!-- Three across: flags, invite, details -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px;">
+      <img src="https://freight.cargo.site/w/1232/q/75/i/Y2833650814770979767640851037699/63.jpg"
+           alt="展覽旗幟" style="width:100%;display:block;object-fit:cover;">
+      <img src="https://freight.cargo.site/w/1500/q/75/i/R2880610040468971717158978534915/myart_2.jpg"
+           alt="參展藝術作品 1" style="width:100%;display:block;object-fit:cover;">
+      <img src="https://freight.cargo.site/w/1500/q/75/i/Z2880611003868627710714021232131/myart_1.jpg"
+           alt="參展藝術作品 2" style="width:100%;display:block;object-fit:cover;">
+    </div>
+
+    <img class="subpage-hero" style="margin-top:0;"
+         src="https://freight.cargo.site/w/1500/q/75/i/Y2880315509552041397696495435267/samia_1.jpg"
+         alt="展覽現場">
+
+    <!-- Text -->
+    <div class="subpage-text">
+      <h2>關於展覽</h2>
+      <p>在繁花盛放中，見證生命的無疆界。在文化交匯的杜拜，《Growth Unbound》是一場關於轉化與生命能量的慶典。展覽巧妙地連結了農曆新年的喜悅、情人節的浪漫，以及齋戒月（Ramadan）前的沉靜思維。作為本展的視覺設計師與參展藝術家，試圖捕捉自然界中「花卉」與「成長」的普世語言，創造出一場跨越國界的藝術對話。</p>
+
+      <h2 style="margin-top:2em;">設計說明</h2>
+      <p>視覺設計的核心在於轉譯「向上生長」的動能，將傳統意象轉化為現代簡約的視覺語彙，選擇具備生命厚度的花卉藝術作品為基調，透過拱門曲線排版設計，象徵著「通道」與「橋樑」，連結人與自然、傳統與現代。並運用溫柔且具包容性的粉色調與暖大地色，呼應愛、希望與靈魂成長的意涵。</p>
+
+      <h2 style="margin-top:2em;">雙重身分：設計師與創作者</h2>
+      <p>在這場展覽中，我擁有雙重觸角。除了負責整體的視覺定調，我也以藝術家身分參展兩件作品。這種「由內而外」的參與，讓我更能深刻理解作品間的能量，並將這份感悟轉化為設計細節，讓觀者不論是在實體展場或數位媒介，都能感受到那份「成長不設限（Unbound）」的律動感。</p>
+    </div>
+
+    <!-- Related -->
+    <div class="subpage-related">
+      <h2>更多展覽設計</h2>
+      <div class="related-grid">
+        <div class="related-item" onclick="openSubpage('subpage-snow')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/D2831581970346089308103563623939/3.jpg" alt="SNOW in Desert">
+          <p>SNOW in Desert<br>展覽視覺設計</p>
+        </div>
+        <div class="related-item" onclick="openSubpage('subpage-sanctuary')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/H2831582316240987434231365975555/8.jpg" alt="SANCTUARY OF FREEDOM">
+          <p>SANCTUARY OF FREEDOM<br>展覽視覺設計</p>
+        </div>
+        <div class="related-item" onclick="openSubpage('subpage-qinglu')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/F2831582232935491197359030877699/7.jpg" alt="Qinglu Liu Solo">
+          <p>Qinglu Liu Solo<br>展覽視覺設計</p>
+        </div>
+        <div class="related-item" onclick="openSubpage('subpage-samia')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/W2831742168826047917638297927171/freepik_kling_1080p_16-9_24fps_36747.jpg" alt="SAMIA ART">
+          <p>DUBAI SAMIA ART<br>品牌識別設計</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SUBPAGE: 地味手帖 NO.15 ── -->
+<div class="subpage" id="subpage-dimei15">
+  <div class="subpage-header">
+    <button class="back-btn" onclick="closeSubpage()">← 返回</button>
+    <span class="subpage-header-title">SUNSEED / 書・雜誌 / 地味手帖第十五期</span>
+    <div class="language-switch" role="group" aria-label="網站語言">
+        <button type="button" data-language="zh-TW" lang="zh-Hant" aria-pressed="true">繁中</button>
+        <button type="button" data-language="en" lang="en" aria-pressed="false" aria-label="English">EN</button>
+      </div>
+  </div>
+  <div class="subpage-body">
+    <h1 class="subpage-title">Make Paths Magazine<br>地味手帖第十五期</h1>
+    <p class="subpage-subtitle">游牧聚落：探尋生活原真的可能性 · 雜誌插畫牌卡設計</p>
+
+    <!-- Hero -->
+    <img class="subpage-hero"
+         src="https://freight.cargo.site/w/2086/q/75/i/A2834955675022972035889044209155/rrr2.jpg"
+         alt="地味手帖15 封面">
+
+    <!-- 6 cards grid -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px;">
+      <img src="https://freight.cargo.site/w/886/q/75/i/X2834957738826252258439969455619/1_1124.jpg"
+           alt="牌卡 NO.1" style="width:100%;display:block;object-fit:cover;">
+      <img src="https://freight.cargo.site/w/886/q/75/i/D2834957826688094281518563802627/2_1126_111.jpg"
+           alt="牌卡 NO.2" style="width:100%;display:block;object-fit:cover;">
+      <img src="https://freight.cargo.site/w/886/q/75/i/V2834958104034891429741672349187/3_1127_ok.jpg"
+           alt="牌卡 NO.3" style="width:100%;display:block;object-fit:cover;">
+      <img src="https://freight.cargo.site/w/886/q/75/i/V2834957997966113005911750557187/4_1129.jpg"
+           alt="牌卡 NO.4" style="width:100%;display:block;object-fit:cover;">
+      <img src="https://freight.cargo.site/w/886/q/75/i/E2834958217224113066023481064963/5_12o1.jpg"
+           alt="牌卡 NO.5" style="width:100%;display:block;object-fit:cover;">
+      <!-- placeholder for symmetry -->
+      <div style="background:var(--ink-ghost);display:flex;align-items:center;justify-content:center;aspect-ratio:1;font-family:var(--font-mono);font-size:0.65rem;color:var(--ink-soft);">NO.6</div>
+    </div>
+
+    <!-- Magazine spreads -->
+    <div class="subpage-image-row" style="margin-top:12px;">
+      <img src="https://freight.cargo.site/w/1064/q/75/i/P2834976486934783900184530206211/_ok_1214-01.jpg" alt="雜誌內頁 1">
+      <img src="https://freight.cargo.site/w/1064/q/75/i/Z2834976864502741600871632682499/_ok_1214-02.jpg" alt="雜誌內頁 2">
+    </div>
+
+    <!-- About -->
+    <div class="subpage-text">
+      <h2>關於這次創作</h2>
+      <p>第三次收到《地味手帖》編輯部的插畫邀請，對我而言是專業上的肯定。在參與「游牧聚落」特輯、繪製心理測驗牌卡的時刻，我自己剛從國外回到台灣，也正處於一段「居無定所」的游牧期。那種在不同城市空間切換、在流動中摸索自我的不確定感，與企劃核心簡直是不謀而合。謝謝生命巧妙的安排，讓我成為這份企劃最直接感同身受的轉譯者、創作者，也把這份對生命不安與期待，透過一筆一劃地轉化成療癒系的視覺插畫作品。</p>
+      <p>這是一個從向外追巡走向內在安定的過程。當我們能夠全然與自己臨在的此時、此刻、此地，所有游牧之地都是家，也是名為生命的風景。不論身在何處，都期許我們擁有愛，愛著當下生活百態的能力。</p>
+
+      <!-- 6 cards detailed -->
+      <h2 style="margin-top:2em;">六張牌卡說明</h2>
+
+      <div style="border-left:2px solid var(--accent-light);padding-left:20px;margin-bottom:2em;">
+        <p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--accent);letter-spacing:0.1em;margin-bottom:0.5em;">NO.1</p>
+        <p style="font-weight:600;margin-bottom:0.5em;">「唯一需要前往的地方，就是這裡」</p>
+        <p>以「啟程」的姿態詮釋「歸來」。我畫了一個半背對畫面的人提著行李在尋路的狀態。地平線的遠方有飽滿的太陽，道路的兩旁有盛開的花海，我想將遠行的孤寂，轉換為天地萬物都在守護支持，陪伴游牧者。畫面上我刻意模糊了遠方的終點，將視覺焦點拉回腳下的路。隱喻一種「在此地、在此刻」，其實即已抵達的定錨。</p>
+      </div>
+
+      <div style="border-left:2px solid var(--accent-light);padding-left:20px;margin-bottom:2em;">
+        <p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--accent);letter-spacing:0.1em;margin-bottom:0.5em;">NO.2</p>
+        <p style="font-weight:600;margin-bottom:0.5em;">「只要行動，力量會自己長出來」</p>
+        <p>對抗迷惘的方法是：跨越柵欄、邁出腳步。畫面中的人站在灰色道路上，前方隔著一道木柵欄，對岸則是盛開的花與遠方的房子。深灰色的路面代表目前的踏實與冷靜，而對岸溫暖的鵝黃大地則象徵著行動後的果實。力量並非在萬事具備後才產生，而是在「跨越柵欄」的瞬間，即能到觀之彼岸。</p>
+      </div>
+
+      <div style="border-left:2px solid var(--accent-light);padding-left:20px;margin-bottom:2em;">
+        <p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--accent);letter-spacing:0.1em;margin-bottom:0.5em;">NO.3</p>
+        <p style="font-weight:600;margin-bottom:0.5em;">「現在，就是擁有選擇的時刻」</p>
+        <p>游牧生活裡的片刻休憩，讓留白重新掌握生命的主導權。這張畫面採取了「拱門框景」構圖，將視覺延伸至窗外秋日般豐饒的暖色森林。設計上強調一種安靜的思考空間，色彩層次豐富。繁華的世界在窗之外，窗內的主角，依然保有自我選擇的領域。當我們能意識到自己有決定權，我們就開啟了擁有改變生命的力量。</p>
+      </div>
+
+      <div style="border-left:2px solid var(--accent-light);padding-left:20px;margin-bottom:2em;">
+        <p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--accent);letter-spacing:0.1em;margin-bottom:0.5em;">NO.4</p>
+        <p style="font-weight:600;margin-bottom:0.5em;">「關掉所有，聽自己的聲音」</p>
+        <p>在生命之流的靜謐中對焦心的頻率。畫面採用俯瞰的「上帝視角」，營造出一種超脫塵囂的孤獨美感。將生命隱喻成川流不息的河，我們坐在一葉扁舟中，獨自在蜿蜒的溪谷中靜心。在大江大海中的生命流動裡，若能清晰地傾聽內在的聲音即能順流航行。</p>
+      </div>
+
+      <div style="border-left:2px solid var(--accent-light);padding-left:20px;margin-bottom:2em;">
+        <p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--accent);letter-spacing:0.1em;margin-bottom:0.5em;">NO.5</p>
+        <p style="font-weight:600;margin-bottom:0.5em;">「在路上曬乾眼淚，悲傷的快樂的都可以」</p>
+        <p>溫柔接納旅行中的各種情緒緩衝。畫面設定在一個正在移動的車廂內，大片的方框車窗捕捉外界海天一色的景致。這是一個在旅途中靜心觀照的瞬間，色彩明亮而充滿希望，彷彿所有的情緒都能被這片海與光所包容。在移動前往他方的路上，所有的眼淚都會被風吹乾，所有的情緒都是生命風景的一部分。</p>
+      </div>
+
+      <div style="border-left:2px solid var(--accent-light);padding-left:20px;margin-bottom:2em;">
+        <p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--accent);letter-spacing:0.1em;margin-bottom:0.5em;">NO.6</p>
+        <p style="font-weight:600;margin-bottom:0.5em;">「愛自己，和正在過的生活」</p>
+        <p>這是遊牧的終點，也是生命的核心主軸。畫面背景是一個壯闊飽滿的橘黃色夕陽，海平面倒映著碎金般的光芒。人物坐在舒適的椅子上，悠閒地翻閱書本，身旁有一瓶盛開的藍色花卉。光線不再是遠方前進的指引，而是籠罩著全身的溫暖洗禮。這是一個不再需要尋找，因為已經擁有的圓滿瞬間。</p>
+      </div>
+
+      <h2 style="margin-top:1em;">創作後記</h2>
+      <p>在創作過程中，這六張牌卡的文字與畫面都完整記錄了一個靈魂從「決定出發」、「跨出行動」、「握有選擇」、「內省聆聽」、「接納情緒」到最後「熱愛生活」的完整歷程。我也透過這次在畫畫、寫文字之中反覆療癒當時的自己。</p>
+      <p>願這份作品，能給予正在「遊牧」或渴望「離開」的人一份力量。無論你正處於哪一個流動緩衝期，希望你都能在時而遊牧的生命裡，穩定地走在生命的核心主軸裡。</p>
+
+      <div style="margin-top:2em;padding:16px 20px;border:1px solid var(--ink-ghost);border-radius:4px;">
+        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--ink-soft);line-height:1.9;">
+          地味手帖 15：遊牧聚落，探尋生活原真的可能性<br>
+          ★ 特製六款「游牧牌卡」，每本隨機贈送三款<br>
+          線上購買：<a href="https://reurl.cc/9WXg6a" target="_blank" style="color:var(--accent);text-decoration:underline;">https://reurl.cc/9WXg6a</a>
+        </p>
+      </div>
+    </div>
+
+    <!-- Related -->
+    <div class="subpage-related">
+      <h2>更多雜誌插畫合作</h2>
+      <div class="related-grid">
+        <div class="related-item" onclick="openSubpage('subpage-dimei13')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/L2863667557631209656801132887555/book12.jpg" alt="地味手帖13">
+          <p>地味手帖第13期<br>插畫設計</p>
+        </div>
+        <div class="related-item" onclick="openSubpage('subpage-dimei14a')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/Y2863656382132481201712025124355/book11.jpg" alt="地味手帖14">
+          <p>地味手帖第14期<br>「成為望族」插畫</p>
+        </div>
+        <div class="related-item" onclick="openCardById('dimei14b')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/A2863714376205538494591516360195/book12a.jpg" alt="地味手帖14b">
+          <p>地味手帖第14期<br>「台灣望族女子圖鑑」</p>
+        </div>
+        <div class="related-item" onclick="openCardById('dimei15b')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/X2863675476228144689952935984643/book14.jpg" alt="地味手帖15插畫">
+          <p>地味手帖第15期<br>雜誌插畫</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SUBPAGE: 澄埕 ── -->
+<div class="subpage" id="subpage-chengting">
+  <div class="subpage-header">
+    <button class="back-btn" onclick="closeSubpage()">← 返回</button>
+    <span class="subpage-header-title">SUNSEED / 建案規劃 / 品泓建設「澄埕」</span>
+    <div class="language-switch" role="group" aria-label="網站語言">
+        <button type="button" data-language="zh-TW" lang="zh-Hant" aria-pressed="true">繁中</button>
+        <button type="button" data-language="en" lang="en" aria-pressed="false" aria-label="English">EN</button>
+      </div>
+  </div>
+  <div class="subpage-body">
+    <h1 class="subpage-title">品泓建設「澄埕」</h1>
+    <p class="subpage-subtitle">建案企劃・視覺設計・接待中心 · 台南</p>
+
+    <!-- Hero -->
+    <img class="subpage-hero"
+         src="https://freight.cargo.site/w/1920/q/75/i/X2858851555899696975598753758723/gamer444.jpg"
+         alt="澄埕 主視覺">
+
+    <div class="subpage-image-row">
+      <img src="https://freight.cargo.site/w/1920/q/75/i/V2858845146227980427814563298819/gamer3322.jpg" alt="建案視覺 2">
+      <img src="https://freight.cargo.site/w/1500/q/75/i/F2858812925392340599709303389699/gamer331.jpg" alt="建案視覺 3">
+    </div>
+
+    <div class="subpage-image-row">
+      <img src="https://freight.cargo.site/w/1500/q/75/i/V2831593516790394341418044833283/a.jpg" alt="銷售展示中心">
+      <img src="https://freight.cargo.site/w/1500/q/75/i/G2831967174241265586906383597059/ee.jpg" alt="銷售展示中心設計">
+    </div>
+
+    <img class="subpage-hero" style="margin-top:0;"
+         src="https://freight.cargo.site/w/1500/q/75/i/B2858400400633259304122000162307/gamer11.jpg"
+         alt="施工圍籬 戶外看板">
+
+    <!-- Text -->
+    <div class="subpage-text">
+      <h2>建案理念</h2>
+      <p>「澄」，是清澈透亮的心境；「埕」，是傳統台灣建築中，匯聚家人情感、與鄰里交流的廟埕與院落。在台南這座充滿文化底蘊的城市，【澄埕】這個建案不只是販售一個居住空間，更是提倡一種回歸純粹、與人共好的生活提案。</p>
+      <p>作為本案的企劃與視覺統籌，企劃核心是：如何將這份抽象的「在地生活感」與「建築工藝」，轉化為一套能夠貫穿預售期到完工期，且兼具說服力與美感的品牌視覺系統。</p>
+
+      <h2 style="margin-top:2em;">從社群螢幕到銷售空間的無縫敘事</h2>
+      <p>在長期的 FB 粉專經營與社群貼文設計中，我們捨棄了傳統房地產高冷、充滿數字的推銷語氣。轉而運用帶有生活感的情境插畫與排版，將生硬的建築工法、周邊機能，轉譯為好懂且充滿溫度的「台南日常圖鑑」，成功拉近建設公司與購屋者之間的心理距離。</p>
+
+      <h2 style="margin-top:2em;">實體空間的視覺轉譯</h2>
+      <p>從戶外的大型廣告看板、建案施工圍籬，到電子展板的介面設計，以極簡、現代且帶有自然氣息的視覺語彙，在車水馬龍的街道上，為澄埕建立起極具辨識度的高級感，讓施工期也成為品牌行銷的一環。</p>
+      <p>我們期待與更多在地的建案，一起將充滿文化厚度與現代美學淬鍊成生活提案。歡迎各方合作。</p>
+
+      <div style="margin-top:2em;padding:16px 20px;border:1px solid var(--ink-ghost);border-radius:4px;">
+        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--ink-soft);line-height:1.9;">
+          品泓建設官方粉專：<a href="https://www.facebook.com/pinhong.develop" target="_blank" style="color:var(--accent);text-decoration:underline;">facebook.com/pinhong.develop</a>
+        </p>
+      </div>
+    </div>
+
+    <!-- Caption legend -->
+    <div style="margin-top:32px;display:flex;flex-wrap:wrap;gap:8px;">
+      <span style="font-family:var(--font-mono);font-size:0.6rem;color:var(--ink-soft);background:var(--accent-light);padding:3px 10px;border-radius:100px;">FB 貼文設計</span>
+      <span style="font-family:var(--font-mono);font-size:0.6rem;color:var(--ink-soft);background:var(--accent-light);padding:3px 10px;border-radius:100px;">建案電子展板設計</span>
+      <span style="font-family:var(--font-mono);font-size:0.6rem;color:var(--ink-soft);background:var(--accent-light);padding:3px 10px;border-radius:100px;">戶外看板設計</span>
+      <span style="font-family:var(--font-mono);font-size:0.6rem;color:var(--ink-soft);background:var(--accent-light);padding:3px 10px;border-radius:100px;">銷售展示中心模擬</span>
+      <span style="font-family:var(--font-mono);font-size:0.6rem;color:var(--ink-soft);background:var(--accent-light);padding:3px 10px;border-radius:100px;">建案施工圍籬圖</span>
+    </div>
+
+    <!-- Related -->
+    <div class="subpage-related">
+      <h2>更多建案設計</h2>
+      <div class="related-grid">
+        <div class="related-item" onclick="openCardById('sansishimu')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/B2831814573624702800935478443523/freepik_-_seedance_720p_4-3_24fps_24089.jpg" alt="叄拾睦">
+          <p>品泓建設「叄拾睦」<br>建案視覺設計</p>
+        </div>
+        <div class="related-item" onclick="openSubpage('subpage-tajunyang')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/O2831774721223465726599038582275/gg.jpg" alt="田中央飯店">
+          <p>台中「田中央飯店」<br>客房手冊／軟裝設計</p>
+        </div>
+        <div class="related-item" onclick="openSubpage('subpage-akijo')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/O2831774630096550002473853599235/ffff.jpg" alt="AKIJO萩条">
+          <p>「AKIJO萩条」<br>視覺／軟裝設計</p>
+        </div>
+        <div class="related-item" onclick="openSubpage('subpage-8dou')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/G2831775834558257551265316814339/jj.jpg" alt="8豆珈琲">
+          <p>「8豆珈琲」<br>視覺設計</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SUBPAGE: QINGLU LIU SOLO ── -->
+<div class="subpage" id="subpage-qinglu">
+  <div class="subpage-header">
+    <button class="back-btn" onclick="closeSubpage()">← 返回</button>
+    <span class="subpage-header-title">SUNSEED / 設計 / Qinglu Liu Solo (劉清路)</span>
+    <div class="language-switch" role="group" aria-label="網站語言">
+        <button type="button" data-language="zh-TW" lang="zh-Hant" aria-pressed="true">繁中</button>
+        <button type="button" data-language="en" lang="en" aria-pressed="false" aria-label="English">EN</button>
+      </div>
+  </div>
+  <div class="subpage-body">
+    <h1 class="subpage-title">Qinglu Liu Solo<br><span style="font-size:0.55em;opacity:0.6;">劉清路個展</span></h1>
+    <p class="subpage-subtitle">Finance · Nothingness · SAMIA ART · 展覽視覺設計 · 杜拜</p>
+
+    <!-- Hero -->
+    <img class="subpage-hero"
+         src="https://freight.cargo.site/w/2222/q/75/i/Z2831873969465842255003796979203/7.jpg"
+         alt="Qinglu Liu Solo 主視覺">
+
+    <!-- Row 2: exhibition website mockups -->
+    <div class="subpage-image-row">
+      <img src="https://freight.cargo.site/w/2462/q/75/i/X2881222571320554085650664603139/samia-_3.jpg" alt="展覽網站 1">
+      <img src="https://freight.cargo.site/w/1000/q/75/i/F2881254782434759786910990810627/samia_333.jpg" alt="展覽網站 2">
+    </div>
+
+    <!-- Row 3: poster + invite card + flag -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px;">
+      <img src="https://freight.cargo.site/w/1500/q/75/i/T2881225247980012669054023187971/samia_33.jpg"
+           alt="展覽主視覺海報" style="width:100%;display:block;object-fit:cover;">
+      <img src="https://freight.cargo.site/w/800/q/75/i/D2853148287951225241562526072323/262-.jpg"
+           alt="展覽邀請卡正反面" style="width:100%;display:block;object-fit:cover;">
+      <img src="https://freight.cargo.site/w/1500/q/75/i/I2853127401938842433175771233795/1.jpg"
+           alt="展覽旗幟" style="width:100%;display:block;object-fit:cover;">
+    </div>
+
+    <!-- Text -->
+    <div class="subpage-text">
+      <h2>關於展覽</h2>
+      <p>Beneath Dubai's scorching sun and neon glow, within a labyrinth forged by gold and code, "Finance · Nothingness" unfolds as a philosophical theater of value, belief, and nothingness. Chinese artist Qinglu Liu weaponizes his signature symbolic art to collide the raw texture of the Middle Eastern desert with the abstract logic of digital economies: When currency detaches from gold's anchorage to become a pure credit symbol, can art and the horizon still serve as eternal totems for humanity's spiritual world in an age of financial capitalism?</p>
+      <p>This exhibition presents Liu's latest series, derived from the universally adored "Astronaut Deer". Their metallic sheen and pristine eyes seem lost in the vast cosmos, yet they march resolutely along a golden brick road toward an uncertain endpoint. The astronaut, a concept ceaselessly debated yet eternally unsolved, embodies humanity's romantic fantasy of stars and seas.</p>
+      <p style="font-style:italic;opacity:0.75;">Will DEEPSEEK dream of the Astronaut Deer?</p>
+
+      <h2 style="margin-top:2em;">視覺設計說明</h2>
+      <p>本展視覺設計的核心在於：如何將「加密貨幣的理性邏輯」與「實體藝術的感性溫度」在視覺維度上完美鎔鑄。我精準提取了藝術家極具標誌性的「太空人」視覺符號作為視覺定錨。畫面中那閃耀著璀璨金屬光澤的頭盔，不僅承載了人類對未知宇宙的浪漫幻想，更隱喻著當代社會在物質與精神間的迷惘。</p>
+      <p>面對極度飽和且充滿張力的主視覺圖像，我在字體與版面編排上選擇了高度的理性克制。透過洗鍊的無襯線字體與精準的空間留白，在畫面上創造出「Finance（金融）」與「Nothingness（虛無）」的對立與平衡，讓觀者在強烈的視覺衝擊後，仍能擁有一方沉靜思考的空間。</p>
+
+      <h2 style="margin-top:2em;">跨媒材整合</h2>
+      <p>專案涵蓋實體空間的牆面卡典、邀請卡，以及展覽網站 Banner 與社群媒體視覺。這套視覺語言能在不同載體中靈活轉換，既保有科技未來感，又不失頂級畫廊的沉穩格調。</p>
+      <p>這套視覺設計不僅是一次跨媒材的完美整合，更深刻轉譯了藝術家遊走於傳統與創新之間，探討科技如何重塑藝術所有權與文化敘事的核心命題。在杜拜這座全球金融樞紐，此設計成功為「首例虛擬貨幣交易實體藝術」的歷史性時刻，建構了最具說服力與美學深度的視覺語彙。</p>
+    </div>
+
+    <!-- Caption legend -->
+    <div style="margin-top:32px;display:flex;flex-wrap:wrap;gap:8px;">
+      <span style="font-family:var(--font-mono);font-size:0.6rem;color:var(--ink-soft);background:var(--accent-light);padding:3px 10px;border-radius:100px;">展覽網站</span>
+      <span style="font-family:var(--font-mono);font-size:0.6rem;color:var(--ink-soft);background:var(--accent-light);padding:3px 10px;border-radius:100px;">展覽主視覺</span>
+      <span style="font-family:var(--font-mono);font-size:0.6rem;color:var(--ink-soft);background:var(--accent-light);padding:3px 10px;border-radius:100px;">展覽視覺海報</span>
+      <span style="font-family:var(--font-mono);font-size:0.6rem;color:var(--ink-soft);background:var(--accent-light);padding:3px 10px;border-radius:100px;">邀請卡正反面</span>
+      <span style="font-family:var(--font-mono);font-size:0.6rem;color:var(--ink-soft);background:var(--accent-light);padding:3px 10px;border-radius:100px;">展覽旗幟</span>
+    </div>
+
+    <!-- Related -->
+    <div class="subpage-related">
+      <h2>更多展覽設計</h2>
+      <div class="related-grid">
+        <div class="related-item" onclick="openSubpage('subpage-samia')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/W2831742168826047917638297927171/freepik_kling_1080p_16-9_24fps_36747.jpg" alt="SAMIA ART">
+          <p>DUBAI SAMIA ART<br>品牌識別設計</p>
+        </div>
+        <div class="related-item" onclick="openSubpage('subpage-snow')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/D2831581970346089308103563623939/3.jpg" alt="SNOW in Desert">
+          <p>SNOW in Desert<br>展覽視覺設計</p>
+        </div>
+        <div class="related-item" onclick="openSubpage('subpage-growth')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/I2831582142841593141361580785155/5.jpg" alt="GROWTH UNBOUND">
+          <p>GROWTH UNBOUND<br>展覽視覺設計</p>
+        </div>
+        <div class="related-item" onclick="openSubpage('subpage-sanctuary')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/H2831582316240987434231365975555/8.jpg" alt="SANCTUARY OF FREEDOM">
+          <p>SANCTUARY OF FREEDOM<br>展覽視覺設計</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SUBPAGE: 小書店第七年 ── -->
+<div class="subpage" id="subpage-book7">
+  <div class="subpage-header">
+    <button class="back-btn" onclick="closeSubpage()">← 返回</button>
+    <span class="subpage-header-title">SUNSEED / 書・雜誌 / 開一間小書店第七年</span>
+    <div class="language-switch" role="group" aria-label="網站語言">
+        <button type="button" data-language="zh-TW" lang="zh-Hant" aria-pressed="true">繁中</button>
+        <button type="button" data-language="en" lang="en" aria-pressed="false" aria-label="English">EN</button>
+      </div>
+  </div>
+  <div class="subpage-body">
+    <h1 class="subpage-title">開一間小書店第七年</h1>
+    <p class="subpage-subtitle">「晴耕雨讀」從心開始的一年 · 全書設計／插畫繪圖</p>
+
+    <!-- Hero -->
+    <img class="subpage-hero"
+         src="https://freight.cargo.site/w/2416/q/75/i/V2863677211845401097137228430851/book10.jpg"
+         alt="開一間小書店第七年 封面">
+
+    <!-- Interior spreads -->
+    <div class="subpage-image-row">
+      <img src="https://freight.cargo.site/w/2528/q/75/i/X2872415835508439986035960659459/bookstore1_1.jpg" alt="內頁 1">
+      <img src="https://freight.cargo.site/w/2528/q/75/i/C2872406390738580758598114164227/bookstore2.jpg" alt="內頁 2">
+    </div>
+    <div class="subpage-image-row">
+      <img src="https://freight.cargo.site/w/2528/q/75/i/Z2872615729555417555228526984707/bookstore3.jpg" alt="內頁 3">
+      <img src="https://freight.cargo.site/w/2528/q/75/i/H2872627106621718503741905255939/bookstore4.jpg" alt="內頁 4">
+    </div>
+
+    <!-- Text -->
+    <div class="subpage-text">
+      <h2>從心開始的一年</h2>
+      <p>「晴耕雨讀」是一間在桃園的獨立書店，本書集結了主理人毓穗，邁入第七年的日常筆記與心境轉折。作為本書的全書視覺統籌與插畫家，我的核心思考在：如何讓讀者在翻開書頁的瞬間，彷彿走進書店，聞到書香、陽光草地與微風的氣息。</p>
+      <p>封面的插畫設計以一家三口，在書店門前種下種子的概念為主，畫出一日一夜、一點一滴建造過程。內頁設計以日記為概念，把主理人每天的隨筆都整理成冊。閱讀完整本書，即能感受到晴耕雨讀式的經營理念，在一本書裡，看見一年的時光。</p>
+
+      <h2 style="margin-top:2em;">封面裝幀與插畫語彙</h2>
+      <p>捨棄了過度商業化的華麗包裝，我以帶有質樸手感、溫潤色彩的插畫貫穿全書。這些插畫不只是文字的配角，而是情緒的引導者。無論是一株植物、一個角落，都試圖還原書店裡那份最真誠、不造作的生活感。</p>
+
+      <h2 style="margin-top:2em;">編排美學與留白節奏</h2>
+      <p>閱讀心靈散文需要沉澱的空間。在內文排版上，我極度重視版面的「呼吸感」（Whitespace）。透過精準的行距設定、柔和的字體選擇，以及圖文交錯的巧妙落位，讓讀者的視線得以在字裡行間緩慢散步，不會感到視覺壓迫。</p>
+
+      <h2 style="margin-top:2em;">從心出發的整體統籌</h2>
+      <p>從概念企劃的視覺化，到最終印刷檔的細節收斂，我將文字中的「靜」與插畫中的「暖」緊密結合。每一次的翻頁，都像是在與自己、與這間小書店進行一場安靜的對話。</p>
+
+      <div style="margin-top:2em;padding:16px 20px;border:1px solid var(--ink-ghost);border-radius:4px;">
+        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--ink-soft);line-height:1.9;">
+          晴耕雨讀書籍介紹與購買：<br>
+          <a href="https://www.facebook.com/share/p/1DengvVQsZ/" target="_blank" style="color:var(--accent);text-decoration:underline;">facebook.com/share/p/1DengvVQsZ</a>
+        </p>
+      </div>
+    </div>
+
+    <!-- Related -->
+    <div class="subpage-related">
+      <h2>更多書籍／雜誌插畫合作</h2>
+      <div class="related-grid">
+        <div class="related-item" onclick="openSubpage('subpage-book9')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/F2863676803047105679659855068675/book09099-.jpg" alt="小書店第九年">
+          <p>開一間小書店第九年<br>全書設計／插畫繪圖</p>
+        </div>
+        <div class="related-item" onclick="openSubpage('subpage-book8')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/D2863628671654894604108102188547/book088.jpg" alt="小書店第八年">
+          <p>開一間小書店第八年<br>全書設計／插畫繪圖</p>
+        </div>
+        <div class="related-item" onclick="openSubpage('subpage-book10')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/C2863633165908940258261000601091/book10101.jpg" alt="小書店第十年">
+          <p>開一間小書店第十年<br>全書設計／插畫繪圖</p>
+        </div>
+        <div class="related-item" onclick="openSubpage('subpage-dimei15')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/G2834947295626370041472641744387/rrr1.jpg" alt="地味手帖15">
+          <p>地味手帖第15期<br>雜誌插畫牌卡設計</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SUBPAGE: 小書店第八年 ── -->
+<div class="subpage" id="subpage-book8">
+  <div class="subpage-header">
+    <button class="back-btn" onclick="closeSubpage()">← 返回</button>
+    <span class="subpage-header-title">SUNSEED / 書・雜誌 / 開一間小書店第八年</span>
+    <div class="language-switch" role="group" aria-label="網站語言">
+        <button type="button" data-language="zh-TW" lang="zh-Hant" aria-pressed="true">繁中</button>
+        <button type="button" data-language="en" lang="en" aria-pressed="false" aria-label="English">EN</button>
+      </div>
+  </div>
+  <div class="subpage-body">
+    <h1 class="subpage-title">開一間小書店第八年</h1>
+    <p class="subpage-subtitle">「晴耕雨讀」有喜有悲的一年 · 全書設計／插畫繪圖</p>
+
+    <!-- Hero -->
+    <img class="subpage-hero"
+         src="https://freight.cargo.site/w/2420/q/75/i/D2863628671654894604108102188547/book088.jpg"
+         alt="開一間小書店第八年 封面">
+
+    <!-- Interior spreads -->
+    <div class="subpage-image-row">
+      <img src="https://freight.cargo.site/w/2528/q/75/i/B2872976438867688582508395445763/bookstore_no8_1.jpg" alt="第八年書封設計、插畫 1">
+      <img src="https://freight.cargo.site/w/2528/q/75/i/C2872985991753914825957923962371/bookstore_no8_41.jpg" alt="第八年書封設計、插畫 2">
+    </div>
+    <div class="subpage-image-row">
+      <img src="https://freight.cargo.site/w/2528/q/75/i/Q2872956727728435828682983030275/bookstore_no8_2.jpg" alt="第八年書封設計、插畫 3">
+      <img src="https://freight.cargo.site/w/2528/q/75/i/J2872974875377001127107929128451/bookstore_no8_3.jpg" alt="第八年書封設計、插畫 4">
+    </div>
+    <p style="font-family:var(--font-mono);font-size:0.62rem;color:var(--ink-soft);margin-top:-4px;margin-bottom:24px;">第八年書封設計、插畫</p>
+
+    <!-- Text -->
+    <div class="subpage-text">
+      <h2>把生活還給書店，把時間留給家人</h2>
+      <p>書封正面的插畫，描繪了主理人一家三口在書店內的桌子，共聚一桌吃飯聊天的日常切片。對許多人來說，晴耕雨讀是一間療癒的獨立書店；但對主理人一家人而言，這裡是他們的生活、他們的家。</p>
+      <p>當卸下「營業中」的招牌，點亮一盞暖黃的桌燈，那些經營上的疲憊、現實的悲喜，都在這頓簡單的飯菜與家人的相伴中被溫柔地接住。我運用質樸的手感筆觸與溫潤的大地色調，去凝結這份書店日常最私密、最安靜的時刻——開店前與打烊後。讓觀者一眼就能感受到晴耕雨讀書店的靈魂，其實是源自於他們一家人彼此間深刻的愛與凝聚。</p>
+
+      <h2 style="margin-top:2em;">書底設計：女兒的書法字跡</h2>
+      <p>在封底的設計上，是將書店小主人（女兒）的書法字跡，直接作為封底的核心視覺。沒有任何一款完美的電腦字型，能比得上孩子那稚嫩、真誠且充滿生命力的筆觸。</p>
+      <p>這行字呼應了「晴耕雨讀」與土地、自然共生的人文氣質，更隱喻著時間的流動，小女孩在書店的書香與歲月中逐漸長大，她的筆跡記錄了第八年的光陰，也完美承載書名中「有喜有悲」的純粹與釋然。</p>
+
+      <h2 style="margin-top:2em;">有喜有悲的一年</h2>
+      <p>延續第七年的靜謐與初心，第八年的主題觸碰到生活與經營中最深刻的切面。作為這本書的全案視覺統籌與插畫家，我的設計不再只是單純地傳遞「美好」，而是要打造一個能夠溫柔接住各種情緒的「視覺容器」。</p>
+      <p>獨立書店「晴耕雨讀」邁入第八年，主理人褪去了初創時的夢幻濾鏡，將一年中真實經歷的喜悅與悲傷、收穫與失去，坦然地揉入文字之中。面對這樣充滿生命重量的文本，我的設計是建構一個安穩且具備高度包容力的視覺場域，讓讀者在翻閱悲喜交加的故事時，依然能感受到被靈魂接納的安定感。</p>
+      <p style="font-style:italic;opacity:0.8;">無論外面的世界經歷多少風雨與悲喜，只要有一桌熱飯、有家人相伴、有書本可以閱讀，這裡就是最安穩的避風港。</p>
+
+      <div style="margin-top:2em;padding:16px 20px;border:1px solid var(--ink-ghost);border-radius:4px;">
+        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--ink-soft);line-height:1.9;">
+          晴耕雨讀書籍介紹與購買：<br>
+          <a href="https://www.facebook.com/share/p/1BBkUitGYZ/" target="_blank" style="color:var(--accent);text-decoration:underline;">facebook.com/share/p/1BBkUitGYZ</a>
+        </p>
+      </div>
+    </div>
+
+    <!-- Related -->
+    <div class="subpage-related">
+      <h2>更多地味手帖雜誌、書籍插畫合作</h2>
+      <div class="related-grid">
+        <div class="related-item" onclick="openSubpage('subpage-book7')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/V2863677211845401097137228430851/book10.jpg" alt="小書店第七年">
+          <p>開一間小書店第七年<br>全書設計／插畫繪圖</p>
+        </div>
+        <div class="related-item" onclick="openSubpage('subpage-book9')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/F2863676803047105679659855068675/book09099-.jpg" alt="小書店第九年">
+          <p>開一間小書店第九年<br>全書設計／插畫繪圖</p>
+        </div>
+        <div class="related-item" onclick="openSubpage('subpage-book10')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/C2863633165908940258261000601091/book10101.jpg" alt="小書店第十年">
+          <p>開一間小書店第十年<br>全書設計／插畫繪圖</p>
+        </div>
+        <div class="related-item" onclick="openSubpage('subpage-dimei15')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/G2834947295626370041472641744387/rrr1.jpg" alt="地味手帖15">
+          <p>地味手帖第15期<br>雜誌插畫牌卡設計</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SUBPAGE: 小書店第九年 ── -->
+<div class="subpage" id="subpage-book9">
+  <div class="subpage-header">
+    <button class="back-btn" onclick="closeSubpage()">← 返回</button>
+    <span class="subpage-header-title">SUNSEED / 書・雜誌 / 開一間小書店第九年</span>
+    <div class="language-switch" role="group" aria-label="網站語言">
+        <button type="button" data-language="zh-TW" lang="zh-Hant" aria-pressed="true">繁中</button>
+        <button type="button" data-language="en" lang="en" aria-pressed="false" aria-label="English">EN</button>
+      </div>
+  </div>
+  <div class="subpage-body">
+    <h1 class="subpage-title">開一間小書店第九年</h1>
+    <p class="subpage-subtitle">「晴耕雨讀」快樂是來自於逐漸實現重要目標的過程 · 全書設計／插畫繪圖</p>
+
+    <!-- Hero -->
+    <img class="subpage-hero"
+         src="https://freight.cargo.site/w/2420/q/75/i/F2863676803047105679659855068675/book09099-.jpg"
+         alt="開一間小書店第九年 封面">
+
+    <div class="subpage-image-row">
+      <img src="https://freight.cargo.site/w/2528/q/75/i/B2873039945233703469423519677955/bookstore_no9_3.jpg" alt="日治新知識階層 插圖 1">
+      <img src="https://freight.cargo.site/w/2528/q/75/i/L2873039858736920507799432150531/bookstore_no9_4.jpg" alt="日治新知識階層 插圖 2">
+    </div>
+    <p style="font-family:var(--font-mono);font-size:0.62rem;color:var(--ink-soft);margin-top:-4px;margin-bottom:24px;">日治新知識階層 插圖</p>
+
+    <div class="subpage-image-row">
+      <img src="https://freight.cargo.site/w/2420/q/75/i/V2873048108729612825143330029059/bookstore_no9_5.jpg" alt="內頁設計 3">
+      <img src="https://freight.cargo.site/w/2420/q/75/i/E2873114292511402802483904462339/bookstore_no9_6.jpg" alt="內頁設計 4">
+    </div>
+
+    <!-- Text -->
+    <div class="subpage-text">
+      <h2>在歲月的流轉中，靜才能點燃內心的微光</h2>
+      <p>「晴耕雨讀」的第九年，是一段關於復原與重新尋找意義的旅程。在經歷了疫情的動盪與至親離世的傷痛後，主理人透過文字不斷向內探尋生命的意義。作為本書的全書視覺設計與插畫家，這本書不需要喧嘩的視覺，而是需要一個安靜、溫暖且充滿靈魂厚度的容器，來承載這些關於時間、失去與重生的深刻思索。</p>
+
+      <h2 style="margin-top:2em;">純粹的插畫手感溫度與身心的呼吸空間</h2>
+      <p><strong>封面：夜色中不滅的溫暖守候。</strong>有別於白日的明亮，我在書封插畫中選擇靜謐的情感山丘為主背景。在這高低起伏之間，冥想、看書，靜靜地過著日子。隱喻著無論外在世界如何劇烈變動，這間小書店始終是穩定等待大家來看書喝茶的地方。</p>
+
+      <h2 style="margin-top:2em;">快樂是來自於逐漸實現重要目標的過程</h2>
+      <p>《開一間小書店第九年》是一本從內到外高度整合的療癒之作。透過全書插畫的繪製與編排設計對話，將主理人真摯的生命獨白，轉譯為一本具備觸覺溫度與靈性深度的實體書。身為第三年設計書店的書籍，就像是跟一位老朋友一起對話、一起生活，願這本書，陪伴每一位翻開書頁的讀者，感受如本年度的標題所言，快樂的情緒其實隱藏在實踐的過程裡。</p>
+
+      <div style="margin-top:2em;padding:16px 20px;border:1px solid var(--ink-ghost);border-radius:4px;">
+        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--ink-soft);line-height:1.9;">
+          晴耕雨讀書籍介紹與購買：<br>
+          <a href="https://www.facebook.com/share/p/1E6YiWmL7E/" target="_blank" style="color:var(--accent);text-decoration:underline;">facebook.com/share/p/1E6YiWmL7E</a>
+        </p>
+      </div>
+    </div>
+
+    <!-- Related -->
+    <div class="subpage-related">
+      <h2>更多地味手帖雜誌、書籍插畫合作</h2>
+      <div class="related-grid">
+        <div class="related-item" onclick="openSubpage('subpage-book8')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/D2863628671654894604108102188547/book088.jpg" alt="小書店第八年">
+          <p>開一間小書店第八年<br>全書設計／插畫繪圖</p>
+        </div>
+        <div class="related-item" onclick="openSubpage('subpage-book10')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/C2863633165908940258261000601091/book10101.jpg" alt="小書店第十年">
+          <p>開一間小書店第十年<br>全書設計／插畫繪圖</p>
+        </div>
+        <div class="related-item" onclick="openSubpage('subpage-book7')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/V2863677211845401097137228430851/book10.jpg" alt="小書店第七年">
+          <p>開一間小書店第七年<br>全書設計／插畫繪圖</p>
+        </div>
+        <div class="related-item" onclick="openSubpage('subpage-dimei15')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/G2834947295626370041472641744387/rrr1.jpg" alt="地味手帖15">
+          <p>地味手帖第15期<br>雜誌插畫牌卡設計</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SUBPAGE: 小書店第十年 ── -->
+<div class="subpage" id="subpage-book10">
+  <div class="subpage-header">
+    <button class="back-btn" onclick="closeSubpage()">← 返回</button>
+    <span class="subpage-header-title">SUNSEED / 書・雜誌 / 開一間小書店第十年</span>
+    <div class="language-switch" role="group" aria-label="網站語言">
+        <button type="button" data-language="zh-TW" lang="zh-Hant" aria-pressed="true">繁中</button>
+        <button type="button" data-language="en" lang="en" aria-pressed="false" aria-label="English">EN</button>
+      </div>
+  </div>
+  <div class="subpage-body">
+    <h1 class="subpage-title">開一間小書店第十年</h1>
+    <p class="subpage-subtitle">「晴耕雨讀」過去、現在與未來 · 全書設計／插畫繪圖</p>
+
+    <!-- Hero -->
+    <img class="subpage-hero"
+         src="https://freight.cargo.site/w/2420/q/75/i/C2863633165908940258261000601091/book10101.jpg"
+         alt="開一間小書店第十年 封面">
+
+    <div class="subpage-image-row">
+      <img src="https://freight.cargo.site/w/2528/q/75/i/F2874665377560554448465954946563/bookstore_no10_1.jpg" alt="第十年封面設計 1">
+      <img src="https://freight.cargo.site/w/2528/q/75/i/M2874671348624037155658136632835/bookstore_no10_2.jpg" alt="第十年封面設計 2">
+    </div>
+    <img class="subpage-hero" style="margin-top:0;"
+         src="https://freight.cargo.site/w/2528/q/75/i/N2874684295028643430937909083651/bookstore_no10_3.jpg"
+         alt="第十年封面設計 3">
+    <p style="font-family:var(--font-mono);font-size:0.62rem;color:var(--ink-soft);margin-top:-4px;margin-bottom:24px;">第十年封面設計</p>
+
+    <!-- Text -->
+    <div class="subpage-text">
+      <h2>十年歲月，凝結成一處永恆的心靈棲息地</h2>
+      <p>「晴耕雨讀」邁入了第十年。這是一段漫長且充滿力量的旅程，作為這系列書籍的全書視覺設計、排版，很開心能參與這一刻里程碑。主理人在這本書中回望了過去的起伏、凝視著現在的平靜，並輕輕探問未來的模樣。在設計上，我和主理人一起討論，決定不追求華麗的紀念儀式，而是回歸書店最純粹的本質，用最安靜的視覺語彙，承載十年的時光重量。</p>
+
+      <h2 style="margin-top:2em;">歲月靜好的視覺轉譯與呼吸感</h2>
+      <p>將這十年的光陰，轉化為紙頁上充滿自然氣息與手感溫度的細節，讓整本書成為一本可以捧在手心裡慢慢閱讀的時光標本。將這十年來，每一年的封面都變成十年封面的一隅，作為這本書的全案視覺統籌與插畫家，我想打造能夠溫柔接住各種情緒的「視覺容器」。</p>
+
+      <h2 style="margin-top:2em;">過去、現在與未來</h2>
+      <p>《開一間小書店第十年》不僅是對過去的總結，更是一份迎向未來的溫柔期許。透過從封面到內頁的一體化視覺統籌，我將主理人十年的堅持與感悟，轉譯為具備高度療癒能量的實體書。它完美延續了品牌一貫的真誠與溫暖，為這個十週年留下了最動人、也最深刻的紙上印記。</p>
+
+      <div style="margin-top:2em;padding:16px 20px;border:1px solid var(--ink-ghost);border-radius:4px;">
+        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--ink-soft);line-height:1.9;">
+          晴耕雨讀書籍介紹與購買：<br>
+          <a href="https://www.facebook.com/share/p/1Bpwnygode/" target="_blank" style="color:var(--accent);text-decoration:underline;">facebook.com/share/p/1Bpwnygode</a>
+        </p>
+      </div>
+    </div>
+
+    <!-- Related -->
+    <div class="subpage-related">
+      <h2>更多地味手帖雜誌、書籍插畫合作</h2>
+      <div class="related-grid">
+        <div class="related-item" onclick="openSubpage('subpage-book9')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/F2863676803047105679659855068675/book09099-.jpg" alt="小書店第九年">
+          <p>開一間小書店第九年<br>全書設計／插畫繪圖</p>
+        </div>
+        <div class="related-item" onclick="openSubpage('subpage-book8')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/D2863628671654894604108102188547/book088.jpg" alt="小書店第八年">
+          <p>開一間小書店第八年<br>全書設計／插畫繪圖</p>
+        </div>
+        <div class="related-item" onclick="openSubpage('subpage-book7')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/V2863677211845401097137228430851/book10.jpg" alt="小書店第七年">
+          <p>開一間小書店第七年<br>全書設計／插畫繪圖</p>
+        </div>
+        <div class="related-item" onclick="openSubpage('subpage-dimei15')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/G2834947295626370041472641744387/rrr1.jpg" alt="地味手帖15">
+          <p>地味手帖第15期<br>雜誌插畫牌卡設計</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SUBPAGE: SANCTUARY OF FREEDOM ── -->
+<div class="subpage" id="subpage-sanctuary">
+  <div class="subpage-header">
+    <button class="back-btn" onclick="closeSubpage()">← 返回</button>
+    <span class="subpage-header-title">SUNSEED / 設計 / SANCTUARY OF FREEDOM</span>
+    <div class="language-switch" role="group" aria-label="網站語言">
+        <button type="button" data-language="zh-TW" lang="zh-Hant" aria-pressed="true">繁中</button>
+        <button type="button" data-language="en" lang="en" aria-pressed="false" aria-label="English">EN</button>
+      </div>
+  </div>
+  <div class="subpage-body">
+    <h1 class="subpage-title">SANCTUARY OF FREEDOM<br><span style="font-size:0.55em;opacity:0.6;">唯心之野</span></h1>
+    <p class="subpage-subtitle">SAMIA ART · 雙人藝術展視覺整合設計 · 杜拜</p>
+
+    <!-- Hero -->
+    <img class="subpage-hero"
+         src="https://freight.cargo.site/w/2228/q/75/i/Y2831882884518998661798159269379/81.jpg"
+         alt="SANCTUARY OF FREEDOM 主視覺">
+
+    <div class="subpage-image-row">
+      <img src="https://freight.cargo.site/w/1386/q/75/i/W2831873843917302089336588680707/4.jpg" alt="展覽海報/網站BANNER">
+      <img src="https://freight.cargo.site/w/1500/q/75/i/U2881172561201246079075917839875/samia_1-.jpg" alt="展覽邀請卡">
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px;">
+      <img src="https://freight.cargo.site/w/1500/q/75/i/H2847873276292754815208896151043/ee1133-.jpg"
+           alt="展覽旗幟" style="width:100%;display:block;object-fit:cover;">
+      <img src="https://freight.cargo.site/w/1500/q/75/i/L2847857537512264382145747828227/ee11.jpg"
+           alt="展覽說明文" style="width:100%;display:block;object-fit:cover;">
+      <img src="https://freight.cargo.site/w/1500/q/75/i/G2847861578326893960444157967875/ee11a.jpg"
+           alt="展覽海報" style="width:100%;display:block;object-fit:cover;">
+    </div>
+
+    <!-- Text -->
+    <div class="subpage-text">
+      <h2>關於展覽</h2>
+      <p>Each of us carries within a quiet, unspoken field—an inner sanctuary untouched by the outside world. Artist Amanda Guo calls this space the Sanctuary of Freedom, and through her paintings, she makes it visible. Her work merges the tonal richness of Western oil painting with the fluid rhythm of Chinese calligraphy.</p>
+      <p>Also featured in the exhibition are sculptures by Ziming Tian, Amanda's partner in art, in travel, and in life. As a couple, they have journeyed across more than a dozen countries before settling in Chengdu, where they founded YILIANG Gallery and began a life grounded in art and family.</p>
+      <p style="font-style:italic;opacity:0.75;">Together, their works form a dual voice — painting and sculpture, line and form, presence and breath. It is, ultimately, an endless dream, born of the heart.</p>
+
+      <h2 style="margin-top:2em;">唯心之野：一場源於內心，無朽的夢</h2>
+      <p>這是一場關於愛、旅途與內在庇護所的對話。《Sanctuary of Freedom 唯心之野》展出了藝術家郭俊池（Amanda Guo）的畫作與田子明（Ziming Tian）的佛造像雕塑。他們將共同走過的地理記憶與日常修行，化為繪畫與雕塑的雙重奏。</p>
+      <p>在為這檔展覽進行視覺統籌時，我的首要任務是：不破壞這份私密的情感，而是為它打造一扇靜謐的窗，讓觀者得以輕柔地踏入他們的內在之野。在眾多充滿回憶的畫作中，我提取了充滿流動感的黃昏風景作為主視覺基底。它揉合了西方油畫的豐富色彩與東方書寫的氣韻，畫面中光影與情感共存的氛圍，完美契合了「自由庇護所」的核心概念。</p>
+      <p>為了呼應畫布上的情感流動以及雕塑中靜謐修行的意象，我在字體與版面編排上克制了過度的設計介入。透過現代洗鍊的無襯線字體與克制的文字層級，在畫面上留下充足的呼吸空間，讓「唯心之野，无朽的梦」宛如自然生長在畫布之上。</p>
+    </div>
+
+    <!-- Related -->
+    <div class="subpage-related">
+      <h2>更多其他展覽</h2>
+      <div class="related-grid">
+        <div class="related-item" onclick="openSubpage('subpage-dimei14a')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/Y2863656382132481201712025124355/book11.jpg" alt="地味手帖14">
+          <p>地味手帖第14期<br>插畫設計</p>
+        </div>
+        <div class="related-item" onclick="openSubpage('subpage-book8')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/D2863628671654894604108102188547/book088.jpg" alt="小書店第八年">
+          <p>開一間小書店第八年<br>全書設計／插畫繪圖</p>
+        </div>
+        <div class="related-item" onclick="openSubpage('subpage-qinglu')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/F2831582232935491197359030877699/7.jpg" alt="Qinglu Liu Solo">
+          <p>Qinglu Liu Solo<br>展覽視覺設計</p>
+        </div>
+        <div class="related-item" onclick="openSubpage('subpage-dimei13')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/L2863667557631209656801132887555/book12.jpg" alt="地味手帖13">
+          <p>地味手帖第13期<br>插畫設計</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SUBPAGE: 地味手帖14-1 望族女子圖鑑 ── -->
+<div class="subpage" id="subpage-dimei14b">
+  <div class="subpage-header">
+    <button class="back-btn" onclick="closeSubpage()">← 返回</button>
+    <span class="subpage-header-title">SUNSEED / 書・雜誌 / 地味手帖14期「望族女子圖鑑」</span>
+    <div class="language-switch" role="group" aria-label="網站語言">
+        <button type="button" data-language="zh-TW" lang="zh-Hant" aria-pressed="true">繁中</button>
+        <button type="button" data-language="en" lang="en" aria-pressed="false" aria-label="English">EN</button>
+      </div>
+  </div>
+  <div class="subpage-body">
+    <h1 class="subpage-title">台灣望族女子圖鑑</h1>
+    <p class="subpage-subtitle">Make Paths Magazine 地味手帖第十四期「望族之後」 · 雜誌繪畫</p>
+
+    <!-- Hero -->
+    <img class="subpage-hero"
+         src="https://freight.cargo.site/w/2390/q/75/i/A2863714376205538494591516360195/book12a.jpg"
+         alt="台灣望族女子圖鑑 主視覺">
+
+    <!-- 4 portraits with names -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+      <div>
+        <img src="https://freight.cargo.site/w/2420/q/75/i/N2866758411851062092746438295043/book12-9.jpg" alt="黃金川" style="width:100%;display:block;">
+        <p style="font-family:var(--font-mono);font-size:0.62rem;color:var(--ink-soft);margin-top:6px;">黃金川</p>
+      </div>
+      <div>
+        <img src="https://freight.cargo.site/w/2420/q/75/i/D2866759087924232394201505021443/book12-10.jpg" alt="林玉盞" style="width:100%;display:block;">
+        <p style="font-family:var(--font-mono);font-size:0.62rem;color:var(--ink-soft);margin-top:6px;">林玉盞</p>
+      </div>
+      <div>
+        <img src="https://freight.cargo.site/w/2420/q/75/i/Y2866759192388144083618695822851/book12-11.jpg" alt="楊水萍" style="width:100%;display:block;">
+        <p style="font-family:var(--font-mono);font-size:0.62rem;color:var(--ink-soft);margin-top:6px;">楊水萍</p>
+      </div>
+      <div>
+        <img src="https://freight.cargo.site/w/2420/q/75/i/Q2866761663126598572202329718275/book12-12.jpg" alt="劉玉英" style="width:100%;display:block;">
+        <p style="font-family:var(--font-mono);font-size:0.62rem;color:var(--ink-soft);margin-top:6px;">劉玉英</p>
+      </div>
+    </div>
+
+    <!-- additional spreads -->
+    <div class="subpage-image-row">
+      <img src="https://freight.cargo.site/w/2420/q/75/i/R2866769975948901204600960400899/book12-13.jpg" alt="雜誌內頁 1">
+      <img src="https://freight.cargo.site/w/2420/q/75/i/V2866776061732685306192843587075/book12-14.jpg" alt="雜誌內頁 2">
+    </div>
+    <div class="subpage-image-row">
+      <img src="https://freight.cargo.site/w/2420/q/75/i/R2866778687276216061347034643971/book12-15.jpg" alt="雜誌內頁 3">
+      <img src="https://freight.cargo.site/w/2420/q/75/i/A2866784427515590174211596959235/book12-16.jpg" alt="雜誌內頁 4">
+    </div>
+
+    <!-- Text -->
+    <div class="subpage-text">
+      <h2>褪去生硬，留下充滿靈魂的呼吸感</h2>
+      <p>作為本期的插畫繪圖者，我採用了一種更具「療癒感」與「手感溫度」的視覺繪製，重塑歷史的溫度。傳統的黑白老照片往往給人距離感與嚴肅感。透過溫潤的色彩計畫與帶有肌理的筆觸，將那些昔日望族的合影與「女子圖鑑」如林玉琄、黃金川等人，轉化為充滿親和力與人情味的當代插畫。</p>
+
+      <h2 style="margin-top:2em;">留白與靈魂的連結</h2>
+      <p>在人物面部特徵與背景處理上，我刻意進行了適度的簡化。這種視覺上的「留白」，不僅讓密集的雜誌內文有了喘息的空間，更為讀者保留了想像的餘地，促成一種跨越時空的靈魂共鳴。</p>
+
+      <h2 style="margin-top:2em;">文字與圖像的和諧律動</h2>
+      <p>插畫是文章裝飾，也是視覺的「休息站」。它們以一種安靜、誠懇的姿態陪伴著文字，引導讀者以更平靜、包容的心態走進那個時代。</p>
+
+      <div style="margin-top:2em;padding:16px 20px;border:1px solid var(--ink-ghost);border-radius:4px;">
+        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--ink-soft);line-height:1.9;">
+          地味手帖 NO.14 望族之後：穿過時代脊簷的光<br>
+          線上購買：<a href="https://bit.ly/423wb6Z" target="_blank" style="color:var(--accent);text-decoration:underline;">bit.ly/423wb6Z</a>
+        </p>
+      </div>
+    </div>
+
+    <!-- Related -->
+    <div class="subpage-related">
+      <h2>更多雜誌插畫合作</h2>
+      <div class="related-grid">
+        <div class="related-item" onclick="openSubpage('subpage-dimei14a')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/Y2863656382132481201712025124355/book11.jpg" alt="地味手帖14">
+          <p>地味手帖第14期<br>「成為望族」插畫</p>
+        </div>
+        <div class="related-item" onclick="openSubpage('subpage-dimei13')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/L2863667557631209656801132887555/book12.jpg" alt="地味手帖13">
+          <p>地味手帖第13期<br>插畫設計</p>
+        </div>
+        <div class="related-item" onclick="openSubpage('subpage-dimei15')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/G2834947295626370041472641744387/rrr1.jpg" alt="地味手帖15">
+          <p>地味手帖第15期<br>雜誌插畫牌卡設計</p>
+        </div>
+        <div class="related-item" onclick="openSubpage('subpage-book9')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/F2863676803047105679659855068675/book09099-.jpg" alt="小書店第九年">
+          <p>開一間小書店第九年<br>全書設計／插畫繪圖</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SUBPAGE: AKIJO 萩条 ── -->
+<div class="subpage" id="subpage-akijo">
+  <div class="subpage-header">
+    <button class="back-btn" onclick="closeSubpage()">← 返回</button>
+    <span class="subpage-header-title">SUNSEED / 咖啡廳・飯店 / 「AKIJO萩条」</span>
+    <div class="language-switch" role="group" aria-label="網站語言">
+        <button type="button" data-language="zh-TW" lang="zh-Hant" aria-pressed="true">繁中</button>
+        <button type="button" data-language="en" lang="en" aria-pressed="false" aria-label="English">EN</button>
+      </div>
+  </div>
+  <div class="subpage-body">
+    <h1 class="subpage-title">AKIJO 萩条</h1>
+    <p class="subpage-subtitle">視覺識別／軟裝設計</p>
+
+    <!-- Hero -->
+    <img class="subpage-hero"
+         src="https://freight.cargo.site/w/2334/q/75/i/O2831774630096550002473853599235/ffff.jpg"
+         alt="AKIJO萩条 主視覺">
+
+    <div class="subpage-image-row">
+      <img src="https://freight.cargo.site/w/2420/q/75/i/M2874772164765872973079944183299/aki_1.jpg" alt="AKIJO萩条 視覺 1">
+      <img src="https://freight.cargo.site/w/2420/q/75/i/B2874780980704673471832885640707/aki_2.jpg" alt="AKIJO萩条 視覺 2">
+    </div>
+    <img class="subpage-hero" style="margin-top:0;"
+         src="https://freight.cargo.site/w/2078/q/75/i/T2874822657193751530864627498499/aki_4.jpg"
+         alt="AKIJO萩条 視覺 3">
+
+    <!-- Text -->
+    <div class="subpage-text">
+      <p style="opacity:0.55;font-style:italic;">這個專案的詳細介紹文字仍在整理中，歡迎之後再回來查看完整內容。</p>
+    </div>
+
+    <!-- Related -->
+    <div class="subpage-related">
+      <h2>更多建案、咖啡廳、飯店作品</h2>
+      <div class="related-grid">
+        <div class="related-item" onclick="openSubpage('subpage-tajunyang')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/O2831774721223465726599038582275/gg.jpg" alt="田中央飯店">
+          <p>台中「田中央飯店」<br>客房手冊／軟裝設計</p>
+        </div>
+        <div class="related-item" onclick="openSubpage('subpage-8dou')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/G2831775834558257551265316814339/jj.jpg" alt="8豆珈琲">
+          <p>「8豆珈琲」<br>視覺設計</p>
+        </div>
+        <div class="related-item" onclick="openSubpage('subpage-chengting')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/S2831771049140803437680855694851/freepik_-_veo3_1_1080p_16-9_24fps_24087.jpg" alt="澄埕">
+          <p>品泓建設「澄埕」<br>建案視覺設計</p>
+        </div>
+        <div class="related-item" onclick="openCardById('sansishimu')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/B2831814573624702800935478443523/freepik_-_seedance_720p_4-3_24fps_24089.jpg" alt="叄拾睦">
+          <p>品泓建設「叄拾睦」<br>建案視覺設計</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SUBPAGE: 田中央 ── -->
+<div class="subpage" id="subpage-tajunyang">
+  <div class="subpage-header">
+    <button class="back-btn" onclick="closeSubpage()">← 返回</button>
+    <span class="subpage-header-title">SUNSEED / 咖啡廳・飯店 / 台中「田中央」</span>
+    <div class="language-switch" role="group" aria-label="網站語言">
+        <button type="button" data-language="zh-TW" lang="zh-Hant" aria-pressed="true">繁中</button>
+        <button type="button" data-language="en" lang="en" aria-pressed="false" aria-label="English">EN</button>
+      </div>
+  </div>
+  <div class="subpage-body">
+    <h1 class="subpage-title">田中央旅店</h1>
+    <p class="subpage-subtitle">視覺整合／軟裝設計／藝文空間設計 · 台中</p>
+
+    <!-- Hero -->
+    <img class="subpage-hero"
+         src="https://freight.cargo.site/w/2528/q/75/i/U2852497974091049475619319528963/gg.jpg"
+         alt="田中央大門口">
+
+    <div class="subpage-image-row">
+      <img src="https://freight.cargo.site/w/1500/q/75/i/Z2853094625763972266044459924995/oldold.jpg" alt="田中央門口招牌設計">
+      <img src="https://freight.cargo.site/w/1500/q/75/i/J2853096937104111213703858306563/oldddd44.jpg" alt="田味食堂 餐廳命名/招牌設計">
+    </div>
+    <p style="font-family:var(--font-mono);font-size:0.62rem;color:var(--ink-soft);margin-top:-4px;margin-bottom:24px;">田中央大門口・門口招牌設計</p>
+
+    <img class="subpage-hero"
+         src="https://freight.cargo.site/w/3000/q/75/i/S2852542352954347356805534924291/oldd.jpg"
+         alt="田味食堂 軟裝佈置">
+    <p style="font-family:var(--font-mono);font-size:0.62rem;color:var(--ink-soft);margin-top:-4px;margin-bottom:24px;">田味食堂 軟裝佈置／牆面吉祥物故事繪圖</p>
+
+    <div class="subpage-image-row">
+      <img src="https://freight.cargo.site/w/900/q/75/i/Y2852494207782418458192746987011/Gemini_Generated_Image_lan4y8lan4y8lan4.png" alt="田味食堂 每月早餐MENU介紹">
+      <img src="https://freight.cargo.site/w/1000/q/75/i/M2852549440949736983037357407747/oldd1.jpg" alt="客房手冊 封面 / 版型設計">
+    </div>
+    <p style="font-family:var(--font-mono);font-size:0.62rem;color:var(--ink-soft);margin-top:-4px;margin-bottom:24px;">田味食堂 每月早餐MENU介紹・客房手冊 封面／版型設計</p>
+
+    <img class="subpage-hero"
+         src="https://freight.cargo.site/w/1000/q/75/i/K2852576077125842215944413330947/oldd23.jpg"
+         alt="田中央客房手冊設計">
+    <p style="font-family:var(--font-mono);font-size:0.62rem;color:var(--ink-soft);margin-top:-4px;margin-bottom:24px;">客房手冊 封面／版型設計</p>
+
+    <div class="subpage-image-row">
+      <img src="https://freight.cargo.site/w/952/q/75/i/X2852713020920798488343707991555/oldddddaa.jpg" alt="田中央客房手冊封面">
+      <img src="https://freight.cargo.site/w/1500/q/75/i/A2858823680360644406441762962947/Gemini_Generated_Image_94z72q94z72q94z7.png" alt="田中央客房手冊設計內容 1">
+    </div>
+
+    <img class="subpage-hero"
+         src="https://freight.cargo.site/w/1000/q/75/i/V2852697977619453122278074695171/olddds.jpg"
+         alt="田中央客房手冊設計內容 2">
+
+    <div class="subpage-image-row">
+      <img src="https://freight.cargo.site/w/1000/q/75/i/U2852687094335597538821974081027/-2026-03-23-4.47.37.png" alt="田中央客房手冊設計內容 3">
+      <img src="https://freight.cargo.site/w/1000/q/75/i/S2852709238932435008264016576003/olddds2.jpg" alt="田中央客房手冊設計內容 4">
+    </div>
+    <p style="font-family:var(--font-mono);font-size:0.62rem;color:var(--ink-soft);margin-top:-4px;margin-bottom:24px;">田中央客房手冊封面／設計內容</p>
+
+    <img class="subpage-hero"
+         src="https://freight.cargo.site/w/2528/q/75/i/V2831778105444686745279668502019/gg1.jpg"
+         alt="田中央飯店藝文空間設計">
+    <p style="font-family:var(--font-mono);font-size:0.62rem;color:var(--ink-soft);margin-top:-4px;margin-bottom:24px;">藝文空間設計</p>
+
+    <!-- Text -->
+    <div class="subpage-text">
+      <h2>跨越時光的在地溫度</h2>
+      <p>田中央旅店是一個提供住宿的空間，也像是一扇帶領旅人認識在地風土的窗。在這個專案中，我是視覺設計師，也是品牌體驗的構築者。我的任務是將「田中央」這質樸、復古且充滿人情味的品牌精神，揉合進旅客從入住到用膳、從實體空間到數位社群的每一個體驗中。</p>
+
+      <h2 style="margin-top:2em;">把在地的人情味，化為旅人最安心的停泊</h2>
+      <p>Logo 中獨特的雙面透視造型，加幾何圖形的堆疊，是從「看畫的人」與「建築」的意象中汲取靈感，設計構築而成。Logo的窗景、畫景的意象都是隱喻藉由場域，展開一場又一場「人與空間」的深刻故事。</p>
+
+      <h2 style="margin-top:2em;">二樓餐廳「田味食堂」</h2>
+      <p>在二樓的「田味食堂」，我將平面插畫的魔力延伸至立體空間。透過牆面的品牌吉祥物故事繪圖與整體的軟裝佈置，我為餐廳定調了輕鬆、溫馨的用餐氛圍，讓旅客在享用在地美食的同時，也能在視覺上獲得充滿童趣與療癒的沉浸式體驗。</p>
+
+      <h2 style="margin-top:2em;">從平面到空間，打造有溫度的全方位體驗</h2>
+      <p>房間內的「客房手冊」是旅人進房後，與飯店的第一次深度對話。我和插畫家阿施合作，運用帶有手感溫度的插畫、溫潤的編排風格，繪製了周邊地圖與飯店指南。讓這本手冊不僅是資訊的載體，更像是一封在地朋友寫給旅人的歡迎信。</p>
+
+      <h2 style="margin-top:2em;">歷久彌新的品牌資產</h2>
+      <p>好的品牌設計需要透過持續的對話來發酵。從2017年起大約兩年的粉專經營期間，我將這份「田中央」獨有的質樸語氣轉化為社群圖文，成功在數位媒體中延續了實體空間的溫度，為飯店累積了極具黏著度的忠實客群。</p>
+      <p>至今來到 2026 年，田中央旅店依然沿用著我所規劃的客房手冊、空間視覺與軟裝基調。在快速變遷的旅宿業中，長達九年的持續使用，是對這份設計最高的肯定。它證明了好的設計不需要迎合短暫的潮流，只要精準捕捉並放大品牌的核心靈魂，就能成為跨越時間、歷久彌新的經典資產。</p>
+
+      <div style="margin-top:2em;padding:16px 20px;border:1px solid var(--ink-ghost);border-radius:4px;">
+        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--ink-soft);line-height:1.9;">
+          田中央旅店官網：<br>
+          <a href="https://www.old-school.com.tw/centralland" target="_blank" style="color:var(--accent);text-decoration:underline;">old-school.com.tw/centralland</a>
+        </p>
+      </div>
+    </div>
+
+    <!-- Related -->
+    <div class="subpage-related">
+      <h2>更多建案、咖啡廳、飯店作品</h2>
+      <div class="related-grid">
+        <div class="related-item" onclick="openSubpage('subpage-akijo')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/O2831774630096550002473853599235/ffff.jpg" alt="AKIJO萩条">
+          <p>「AKIJO萩条」<br>視覺／軟裝設計</p>
+        </div>
+        <div class="related-item" onclick="openSubpage('subpage-8dou')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/G2831775834558257551265316814339/jj.jpg" alt="8豆珈琲">
+          <p>「8豆珈琲」<br>視覺設計</p>
+        </div>
+        <div class="related-item" onclick="openSubpage('subpage-chengting')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/S2831771049140803437680855694851/freepik_-_veo3_1_1080p_16-9_24fps_24087.jpg" alt="澄埕">
+          <p>品泓建設「澄埕」<br>建案視覺設計</p>
+        </div>
+        <div class="related-item" onclick="openCardById('sansishimu')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/B2831814573624702800935478443523/freepik_-_seedance_720p_4-3_24fps_24089.jpg" alt="叄拾睦">
+          <p>品泓建設「叄拾睦」<br>建案視覺設計</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SUBPAGE: 8豆珈琲 ── -->
+<div class="subpage" id="subpage-8dou">
+  <div class="subpage-header">
+    <button class="back-btn" onclick="closeSubpage()">← 返回</button>
+    <span class="subpage-header-title">SUNSEED / 咖啡廳・飯店 / 「8豆珈琲」</span>
+    <div class="language-switch" role="group" aria-label="網站語言">
+        <button type="button" data-language="zh-TW" lang="zh-Hant" aria-pressed="true">繁中</button>
+        <button type="button" data-language="en" lang="en" aria-pressed="false" aria-label="English">EN</button>
+      </div>
+  </div>
+  <div class="subpage-body">
+    <h1 class="subpage-title">8豆珈琲</h1>
+    <p class="subpage-subtitle">LOGO 設計</p>
+
+    <!-- Hero -->
+    <img class="subpage-hero"
+         src="https://freight.cargo.site/w/2305/q/75/i/G2831775834558257551265316814339/jj.jpg"
+         alt="8豆珈琲 主視覺">
+
+    <div class="subpage-image-row">
+      <img src="https://freight.cargo.site/w/2622/q/75/i/N2874909371021103926218739236355/ba1.jpg" alt="8豆珈琲 視覺 1">
+      <img src="https://freight.cargo.site/w/2622/q/75/i/M2874918011291560611035620654595/ba2.jpg" alt="8豆珈琲 視覺 2">
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px;">
+      <img src="https://freight.cargo.site/w/1652/q/75/i/M2874896661749392718475252809219/-2026-03-09-2.10.14.png"
+           alt="8豆珈琲 LOGO 應用 1" style="width:100%;display:block;object-fit:cover;">
+      <img src="https://freight.cargo.site/w/1500/q/75/i/E2874919613944685734921465052675/-2026-03-09-2.08.48.png"
+           alt="8豆珈琲 LOGO 應用 2" style="width:100%;display:block;object-fit:cover;">
+      <img src="https://freight.cargo.site/w/1202/q/75/i/V2874919814442347072070581566979/-2026-03-09-2.10.32.png"
+           alt="8豆珈琲 LOGO 應用 3" style="width:100%;display:block;object-fit:cover;">
+    </div>
+
+    <!-- Text -->
+    <div class="subpage-text">
+      <p style="opacity:0.55;font-style:italic;">這個專案的詳細介紹文字仍在整理中，歡迎之後再回來查看完整內容。</p>
+    </div>
+
+    <!-- Related -->
+    <div class="subpage-related">
+      <h2>更多建案、咖啡廳、飯店作品</h2>
+      <div class="related-grid">
+        <div class="related-item" onclick="openSubpage('subpage-tajunyang')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/O2831774721223465726599038582275/gg.jpg" alt="田中央飯店">
+          <p>台中「田中央飯店」<br>客房手冊／軟裝設計</p>
+        </div>
+        <div class="related-item" onclick="openSubpage('subpage-akijo')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/O2831774630096550002473853599235/ffff.jpg" alt="AKIJO萩条">
+          <p>「AKIJO萩条」<br>視覺／軟裝設計</p>
+        </div>
+        <div class="related-item" onclick="openSubpage('subpage-chengting')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/S2831771049140803437680855694851/freepik_-_veo3_1_1080p_16-9_24fps_24087.jpg" alt="澄埕">
+          <p>品泓建設「澄埕」<br>建案視覺設計</p>
+        </div>
+        <div class="related-item" onclick="openCardById('sansishimu')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/B2831814573624702800935478443523/freepik_-_seedance_720p_4-3_24fps_24089.jpg" alt="叄拾睦">
+          <p>品泓建設「叄拾睦」<br>建案視覺設計</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SUBPAGE: LINE 貼圖設計 ── -->
+<div class="subpage" id="subpage-line">
+  <div class="subpage-header">
+    <button class="back-btn" onclick="closeSubpage()">← 返回</button>
+    <span class="subpage-header-title">SUNSEED / 杉熹獨家設計 / LINE 貼圖設計</span>
+    <div class="language-switch" role="group" aria-label="網站語言">
+        <button type="button" data-language="zh-TW" lang="zh-Hant" aria-pressed="true">繁中</button>
+        <button type="button" data-language="en" lang="en" aria-pressed="false" aria-label="English">EN</button>
+      </div>
+  </div>
+  <div class="subpage-body">
+    <h1 class="subpage-title">LINE 角色設計、貼圖</h1>
+    <p class="subpage-subtitle">客製化 LINE 貼圖設計 · 杉熹獨家設計</p>
+
+    <!-- Hero -->
+    <img class="subpage-hero"
+         src="https://freight.cargo.site/w/2528/q/75/i/G2890410425221606089992181988867/line4.jpg"
+         alt="貓咪咚咚 角色設計">
+    <p style="font-family:var(--font-mono);font-size:0.62rem;color:var(--ink-soft);margin-top:-4px;margin-bottom:24px;">貓咪咚咚 角色設計</p>
+
+    <div class="subpage-image-row">
+      <img src="https://freight.cargo.site/w/1500/q/75/i/N2890484961264837529322408459779/car1-.jpg" alt="LINE貼圖 客製化文字、貼圖畫面 1">
+      <img src="https://freight.cargo.site/w/1500/q/75/i/I2890485067020021303899267874307/line3-1.jpg" alt="可愛風角色設計">
+    </div>
+    <p style="font-family:var(--font-mono);font-size:0.62rem;color:var(--ink-soft);margin-top:-4px;margin-bottom:24px;">可愛風 角色設計｜LINE貼圖 客製化文字、貼圖畫面</p>
+
+    <div class="subpage-image-row">
+      <img src="https://freight.cargo.site/w/1500/q/75/i/O2853156226415303642099516259843/car1.jpg" alt="日系漫畫風角色設計">
+      <img src="https://freight.cargo.site/w/1500/q/75/i/W2853162469660495156876132040195/line3.jpg" alt="LINE貼圖 客製化文字、貼圖畫面 2">
+    </div>
+    <p style="font-family:var(--font-mono);font-size:0.62rem;color:var(--ink-soft);margin-top:-4px;margin-bottom:24px;">日系漫畫風角色設計｜LINE貼圖 客製化文字、貼圖畫面</p>
+
+    <div class="subpage-image-row">
+      <img src="https://freight.cargo.site/w/1500/q/75/i/M2890501567724828957461736144387/car1-444.jpg" alt="插畫風格角色設計">
+      <img src="https://freight.cargo.site/w/1500/q/75/i/C2890503835493758403019173608963/line3-444.jpg" alt="萌醜風格角色設計">
+    </div>
+    <p style="font-family:var(--font-mono);font-size:0.62rem;color:var(--ink-soft);margin-top:-4px;margin-bottom:24px;">插畫風格 角色設計 客製LINE貼圖｜萌醜風格 角色設計 客製LINE貼圖</p>
+
+    <div class="subpage-image-row">
+      <img src="https://freight.cargo.site/w/1500/q/75/i/G2890508102945085670913134902787/line3-555.jpg" alt="角色設計">
+      <img src="https://freight.cargo.site/w/1500/q/75/i/B2890511258537360640037582093827/line3-77.jpg" alt="LINE貼圖 客製化文字、貼圖畫面 3">
+    </div>
+    <p style="font-family:var(--font-mono);font-size:0.62rem;color:var(--ink-soft);margin-top:-4px;margin-bottom:24px;">角色設計｜LINE貼圖 客製化文字、貼圖畫面</p>
+
+    <div class="subpage-image-row">
+      <img src="https://freight.cargo.site/w/1500/q/75/i/Z2890499256384690009802337762819/car1-111.jpg" alt="角色設計延伸">
+      <img src="https://freight.cargo.site/w/1500/q/75/i/L2890497945964884501623210065411/line3-22.jpg" alt="LINE貼圖延伸畫面">
+    </div>
+
+    <!-- Text -->
+    <div class="subpage-text">
+      <p>每一款 LINE 貼圖角色，都從草圖、表情變化到最終的貼圖排版，一手包辦完整設計流程。從萌系到日系漫畫風，依照客戶的品牌個性與想傳達的情緒語氣，量身打造專屬的角色與表情包。</p>
+
+      <div style="margin-top:2em;padding:16px 20px;border:1px solid var(--ink-ghost);border-radius:4px;">
+        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--ink-soft);line-height:1.9;">
+          更多杉熹設計 原創LINE貼圖：<br>
+          <a href="https://bit.ly/48DaL4r" target="_blank" style="color:var(--accent);text-decoration:underline;">bit.ly/48DaL4r</a>
+        </p>
+      </div>
+    </div>
+
+    <!-- Related -->
+    <div class="subpage-related">
+      <h2>更多杉熹獨家設計</h2>
+      <div class="related-grid">
+        <div class="related-item" onclick="openSubpage('subpage-chengting')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/S2831771049140803437680855694851/freepik_-_veo3_1_1080p_16-9_24fps_24087.jpg" alt="澄埕">
+          <p>品泓建設「澄埕」<br>建案視覺設計</p>
+        </div>
+        <div class="related-item" onclick="openSubpage('subpage-tajunyang')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/O2831774721223465726599038582275/gg.jpg" alt="田中央飯店">
+          <p>台中「田中央飯店」<br>客房手冊／軟裝設計</p>
+        </div>
+        <div class="related-item" onclick="openSubpage('subpage-8dou')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/G2831775834558257551265316814339/jj.jpg" alt="8豆珈琲">
+          <p>「8豆珈琲」<br>視覺設計</p>
+        </div>
+        <div class="related-item" onclick="openSubpage('subpage-akijo')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/O2831774630096550002473853599235/ffff.jpg" alt="AKIJO萩条">
+          <p>「AKIJO萩条」<br>視覺／軟裝設計</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SUBPAGE: 地味手帖13 ── -->
+<div class="subpage" id="subpage-dimei13">
+  <div class="subpage-header">
+    <button class="back-btn" onclick="closeSubpage()">← 返回</button>
+    <span class="subpage-header-title">SUNSEED / 書・雜誌 / 地味手帖第十三期</span>
+    <div class="language-switch" role="group" aria-label="網站語言">
+        <button type="button" data-language="zh-TW" lang="zh-Hant" aria-pressed="true">繁中</button>
+        <button type="button" data-language="en" lang="en" aria-pressed="false" aria-label="English">EN</button>
+      </div>
+  </div>
+  <div class="subpage-body">
+    <h1 class="subpage-title">地區賽隊：地方愛的熱力展現</h1>
+    <p class="subpage-subtitle">Make Paths Magazine 地味手帖第十三期 · 雜誌繪畫</p>
+
+    <!-- Hero -->
+    <img class="subpage-hero"
+         src="https://freight.cargo.site/w/2400/q/75/i/L2863667557631209656801132887555/book12.jpg"
+         alt="地味手帖13 封面">
+
+    <div class="subpage-image-row">
+      <img src="https://freight.cargo.site/w/2420/q/75/i/F2868496934192959725187620748803/book13-3.jpg" alt="柔道過肩摔插畫">
+      <img src="https://freight.cargo.site/w/2420/q/75/i/Z2868507401152248309092850941443/book13-5.jpg" alt="角力壓制插畫">
+    </div>
+    <img class="subpage-hero" style="margin-top:0;"
+         src="https://freight.cargo.site/w/2390/q/75/i/F2868508855290636895543095279107/Gemini_Generated_Image_ktlh3cktlh3cktlh.png"
+         alt="地味手帖13期 內頁插畫設計">
+    <p style="font-family:var(--font-mono);font-size:0.62rem;color:var(--ink-soft);margin-top:-4px;margin-bottom:24px;">《地味手帖 NO.13 地區賽隊》內頁插畫設計</p>
+
+    <!-- Text -->
+    <div class="subpage-text">
+      <h2>競技場上的溫柔濾鏡</h2>
+      <p>面對「柔道」與「角力」這樣充滿力量與對抗性的主題，我思考如何在展現競技體育精神的同時，也保持雜誌一貫溫潤、充滿人文關懷的閱讀氛圍。</p>
+
+      <h2 style="margin-top:2em;">用色彩與肌理，柔軟剛硬的賽場</h2>
+      <p>我使用質樸手感與幾何色塊的視覺語彙，在描繪柔道的「過肩摔」或角力的「壓制」動作時，製造反差的溫柔張力。透過簡化的五官與帶有顆粒質感的筆觸，將賽場上的肅殺之氣轉化為一種純粹的、對運動的專注與熱愛。這種略帶「萌感」與質樸的繪畫風格，拉近了專業賽事與一般讀者之間的心理距離。</p>
+
+      <h2 style="margin-top:2em;">高飽和的幾何舞台</h2>
+      <p>在背景處理上，我大膽使用了高飽和度的對比色（如明黃與洋紅的柔道墊、湛藍與正紅的角力場）。這些大面積的純色幾何區塊，不僅在視覺上極具現代感，更為雜誌密集的資訊方塊（如賽制說明、規則筆記）提供了完美的承載空間與「留白」餘地。</p>
+      <p>這系列插畫成功完成了輔助文章的功能，更成為該期雜誌中極具視覺記憶點的亮點。透過我的繪畫風格轉譯，將生硬的賽規與激烈的賽場被賦予了充滿溫度的色彩，讓讀者在翻閱的過程中，能深刻感受到屬於台灣在地運動員的質樸與熱血。</p>
+
+      <h2 style="margin-top:2em;">關於本期：地區賽隊</h2>
+      <p>這一期，我們先從日治時期地區運動與比賽的興起開始談，探看「會打棒球就有工作」的運動時代背景是如何形成。接著把眼光聚焦於歐美國家，在同樣大時代底下，地區運動如何在英國打破階級藩籬、在美國對抗種族歧視、在德國成為融合新舊住民的計畫，明示著運動在改變國家和社會之前，每個人的參與早已產生意義。</p>
+      <p>看見賽事中的心理抗衡、電影中的人地關係、場邊的精采瞬間，十足過癮的看盡賽隊比賽的方方面面。正值暑熱，一起來看地區賽隊的汗和淚，如何開展另一種歸屬於地方的動能量！</p>
+
+      <div style="margin-top:2em;padding:16px 20px;border:1px solid var(--ink-ghost);border-radius:4px;">
+        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--ink-soft);line-height:1.9;">
+          地味手帖 NO.13 地區賽隊：地方愛的熱力展現<br>
+          線上購買：<a href="https://bit.ly/3OhzYKS" target="_blank" style="color:var(--accent);text-decoration:underline;">bit.ly/3OhzYKS</a>
+        </p>
+      </div>
+    </div>
+
+    <!-- Related -->
+    <div class="subpage-related">
+      <h2>更多地味手帖雜誌、書籍插畫合作</h2>
+      <div class="related-grid">
+        <div class="related-item" onclick="openSubpage('subpage-dimei14a')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/Y2863656382132481201712025124355/book11.jpg" alt="地味手帖14">
+          <p>地味手帖第14期<br>「成為望族」插畫</p>
+        </div>
+        <div class="related-item" onclick="openSubpage('subpage-dimei14b')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/A2863714376205538494591516360195/book12a.jpg" alt="台灣望族女子圖鑑">
+          <p>地味手帖第14期<br>「台灣望族女子圖鑑」</p>
+        </div>
+        <div class="related-item" onclick="openSubpage('subpage-dimei15')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/G2834947295626370041472641744387/rrr1.jpg" alt="地味手帖15">
+          <p>地味手帖第15期<br>雜誌插畫牌卡設計</p>
+        </div>
+        <div class="related-item" onclick="openSubpage('subpage-book9')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/F2863676803047105679659855068675/book09099-.jpg" alt="小書店第九年">
+          <p>開一間小書店第九年<br>全書設計／插畫繪圖</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SUBPAGE: 云章寄月・星沙载道 ── -->
+<div class="subpage" id="subpage-moon">
+  <div class="subpage-header">
+    <button class="back-btn" onclick="closeSubpage()">← 返回</button>
+    <span class="subpage-header-title">SUNSEED / 設計 / 云章寄月・星沙载道</span>
+    <div class="language-switch" role="group" aria-label="網站語言">
+        <button type="button" data-language="zh-TW" lang="zh-Hant" aria-pressed="true">繁中</button>
+        <button type="button" data-language="en" lang="en" aria-pressed="false" aria-label="English">EN</button>
+      </div>
+  </div>
+  <div class="subpage-body">
+    <h1 class="subpage-title">云章寄月<br><span style="font-size:0.55em;opacity:0.6;">星沙载道</span></h1>
+    <p class="subpage-subtitle">Sending Artistic Inscriptions to the Moon, Carrying the Dao Across Starry Sands<br>SAMIA ART · 展覽視覺設計 · 杜拜</p>
+
+    <!-- Hero -->
+    <img class="subpage-hero"
+         src="https://freight.cargo.site/w/1386/q/75/i/L2831882766072454964509128343043/2aaa.jpg"
+         alt="展覽邀請卡">
+
+    <div class="subpage-image-row">
+      <img src="https://freight.cargo.site/w/2482/q/75/i/A2881953573969426380081653169667/samia_4.jpg" alt="展覽內容 1">
+      <img src="https://freight.cargo.site/w/2482/q/75/i/X2881961864766316588471079222787/samia_42.jpg" alt="展覽內容 2">
+    </div>
+
+    <!-- Text -->
+    <div class="subpage-text">
+      <p style="font-style:italic;opacity:0.75;">Sending Artistic Inscriptions to the Moon, Carrying the Dao Across Starry Sands — Dubai International Calligraphy and Painting Art Exhibition 2025</p>
+
+      <h2 style="margin-top:1.5em;">東方哲思與沙漠星辰的跨時空對話</h2>
+      <p>寄託了東方文人對自然與宇宙的浪漫幽思，「星沙載道」呼應了杜拜這座沙漠之城，廣袤無垠的地理意象。2025 Dubai International Calligraphy and Painting Art Exhibition 的視覺設計，是在杜拜 Samia Art Gallery 的現代空間中，搭建東方傳統書畫美學與中東在地文化的視覺橋樑。</p>
+
+      <h2 style="margin-top:2em;">跨媒材整合</h2>
+      <p>專案涵蓋實體空間的牆面卡典、邀請卡等，以及網站 Banner 與社群媒體視覺。它不僅精準傳達了主辦方推廣書畫藝術的初衷，也讓來自世界各地的觀者，在步入展場的瞬間，便能感受到那份跨越星沙的東方禪意。</p>
+    </div>
+
+    <!-- Related -->
+    <div class="subpage-related">
+      <h2>更多其他展覽</h2>
+      <div class="related-grid">
+        <div class="related-item" onclick="openSubpage('subpage-dimei14a')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/Y2863656382132481201712025124355/book11.jpg" alt="地味手帖14">
+          <p>地味手帖第14期<br>「成為望族」插畫</p>
+        </div>
+        <div class="related-item" onclick="openSubpage('subpage-book9')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/F2863676803047105679659855068675/book09099-.jpg" alt="小書店第九年">
+          <p>開一間小書店第九年<br>全書設計／插畫繪圖</p>
+        </div>
+        <div class="related-item" onclick="openSubpage('subpage-dimei14b')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/A2863714376205538494591516360195/book12a.jpg" alt="台灣望族女子圖鑑">
+          <p>地味手帖第14期<br>「台灣望族女子圖鑑」</p>
+        </div>
+        <div class="related-item" onclick="openSubpage('subpage-akijo')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/O2831774630096550002473853599235/ffff.jpg" alt="AKIJO萩条">
+          <p>「AKIJO萩条」<br>視覺／軟裝設計</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SUBPAGE: 地味手帖14 成為望族 ── -->
+<div class="subpage" id="subpage-dimei14a">
+  <div class="subpage-header">
+    <button class="back-btn" onclick="closeSubpage()">← 返回</button>
+    <span class="subpage-header-title">SUNSEED / 書・雜誌 / 地味手帖第十四期「成為望族」</span>
+    <div class="language-switch" role="group" aria-label="網站語言">
+        <button type="button" data-language="zh-TW" lang="zh-Hant" aria-pressed="true">繁中</button>
+        <button type="button" data-language="en" lang="en" aria-pressed="false" aria-label="English">EN</button>
+      </div>
+  </div>
+  <div class="subpage-body">
+    <h1 class="subpage-title">望族之後</h1>
+    <p class="subpage-subtitle">Make Paths Magazine 地味手帖第十四期 · 內頁插畫設計</p>
+
+    <!-- Hero -->
+    <img class="subpage-hero"
+         src="https://freight.cargo.site/w/2400/q/75/i/Y2863656382132481201712025124355/book11.jpg"
+         alt="地味手帖14 封面">
+
+    <div class="subpage-image-row">
+      <img src="https://freight.cargo.site/w/2420/q/75/i/F2863697303079815489747951894019/book12-1.jpg" alt="日治新知識階層 插圖">
+      <img src="https://freight.cargo.site/w/2420/q/75/i/W2863699791213549639839692963331/book12-2.jpg" alt="五大家族 插圖">
+    </div>
+    <p style="font-family:var(--font-mono);font-size:0.62rem;color:var(--ink-soft);margin-top:-4px;margin-bottom:24px;">日治新知識階層 插圖・五大家族 插圖</p>
+
+    <img class="subpage-hero" style="margin-top:0;"
+         src="https://freight.cargo.site/w/2420/q/75/i/P2863703984176924338094484831747/book12-3.jpg"
+         alt="內頁插畫設計">
+
+    <!-- Text -->
+    <div class="subpage-text">
+      <h2>穿梭時光的溫柔轉譯</h2>
+      <p>作為本期的插畫繪圖者，我並未採用絕對寫實的歷史復刻，而是刻意採用了一種更具「療癒感」、「手感溫度」的視覺策略。</p>
+
+      <h2 style="margin-top:2em;">重塑歷史的溫度</h2>
+      <p>傳統的黑白老照片往往給人距離感與嚴肅感。透過溫潤的色彩計畫與帶有肌理的筆觸，將那些昔日望族的合影與「女子圖鑑」，如林玉琄、黃金川等人，轉化為充滿親和力與人情味的當代插畫。</p>
+
+      <h2 style="margin-top:2em;">留白與靈魂的連結</h2>
+      <p>在人物面部特徵與背景處理上，我刻意進行了適度的簡化。這種視覺上的「留白」，不僅讓密集的雜誌內文有了喘息的空間，更為讀者保留了想像的餘地，促成一種跨越時空的靈魂共鳴。</p>
+
+      <h2 style="margin-top:2em;">文字與圖像的和諧律動</h2>
+      <p>在編輯排版的考量下，插畫不只是文章的附屬裝飾，而是視覺的「休息站」。它們以一種安靜、誠懇的姿態陪伴著文字，引導讀者以更平靜、包容的心態走進那個時代。</p>
+
+      <p style="font-style:italic;opacity:0.8;margin-top:1.5em;">猶如地方之鑰，開啟地區發展和歷史脈絡的地方望族，是穿過時代脊簷的光。</p>
+
+      <div style="margin-top:2em;padding:16px 20px;border:1px solid var(--ink-ghost);border-radius:4px;">
+        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--ink-soft);line-height:1.9;">
+          地味手帖 NO.14 望族之後：穿過時代脊簷的光<br>
+          線上購買：<a href="https://bit.ly/423wb6Z" target="_blank" style="color:var(--accent);text-decoration:underline;">bit.ly/423wb6Z</a>
+        </p>
+      </div>
+    </div>
+
+    <!-- Related -->
+    <div class="subpage-related">
+      <h2>更多地味手帖雜誌、書籍插畫合作</h2>
+      <div class="related-grid">
+        <div class="related-item" onclick="openSubpage('subpage-dimei14b')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/A2863714376205538494591516360195/book12a.jpg" alt="台灣望族女子圖鑑">
+          <p>地味手帖第14期<br>「台灣望族女子圖鑑」</p>
+        </div>
+        <div class="related-item" onclick="openSubpage('subpage-dimei13')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/L2863667557631209656801132887555/book12.jpg" alt="地味手帖13">
+          <p>地味手帖第13期<br>插畫設計</p>
+        </div>
+        <div class="related-item" onclick="openSubpage('subpage-dimei15')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/G2834947295626370041472641744387/rrr1.jpg" alt="地味手帖15">
+          <p>地味手帖第15期<br>雜誌插畫牌卡設計</p>
+        </div>
+        <div class="related-item" onclick="openSubpage('subpage-sanctuary')">
+          <img src="https://freight.cargo.site/w/900/q/75/i/H2831582316240987434231365975555/8.jpg" alt="SANCTUARY OF FREEDOM">
+          <p>SANCTUARY OF FREEDOM<br>展覽視覺設計</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox">
+  <div class="lightbox-inner">
+    <button class="lightbox-close" id="lightboxClose">✕ CLOSE</button>
+    <img class="lightbox-img" id="lightboxImg" src="" alt="">
+    <p class="lightbox-caption" id="lightboxCaption"></p>
+  </div>
+</div>
+
+<script>
+// ── FILTER ──
+const filterBtns = document.querySelectorAll('.filter-btn');
+const gridItems = document.querySelectorAll('.grid-item');
+const emptyState = document.getElementById('emptyState');
+
+// Add live counts to filter buttons
+filterBtns.forEach(btn => {
+  const filter = btn.dataset.filter;
+  let count = gridItems.length;
+  if (filter !== 'all') {
+    count = [...gridItems].filter(item => (item.dataset.tags || '').includes(filter)).length;
+  }
+  if (count > 0) {
+    const span = document.createElement('span');
+    span.className = 'filter-count';
+    span.textContent = count;
+    btn.appendChild(span);
+  }
+});
+
+filterBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    filterBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    const filter = btn.dataset.filter;
+    let visibleCount = 0;
+    gridItems.forEach(item => {
+      let visible;
+      if (filter === 'all') {
+        visible = true;
+      } else {
+        const tags = item.dataset.tags || '';
+        visible = tags.includes(filter);
+      }
+      item.classList.toggle('hidden', !visible);
+      if (visible) visibleCount++;
+    });
+    emptyState.classList.toggle('show', visibleCount === 0);
+  });
+});
+
+// Nav sidebar links filter
+document.querySelectorAll('[data-filter]').forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    const filter = link.dataset.filter;
+    const matchBtn = [...filterBtns].find(b => b.dataset.filter === filter);
+    if (matchBtn) matchBtn.click();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+});
+
+// ── CARD HOVER OVERLAY (injected, no manual HTML edits needed) ──
+document.querySelectorAll('.card').forEach(card => {
+  const imgWrap = card.querySelector('.card-img-wrap');
+  const titleEl = card.querySelector('.card-title');
+  const subEl = card.querySelector('.card-sub');
+  if (!imgWrap || !titleEl) return;
+
+  const overlay = document.createElement('div');
+  overlay.className = 'card-overlay';
+  overlay.innerHTML = `<div class="card-title">${titleEl.textContent}</div><div class="card-sub">${subEl ? subEl.textContent : ''}</div>`;
+  imgWrap.appendChild(overlay);
+
+  const viewTag = document.createElement('span');
+  viewTag.className = 'card-view-tag';
+  viewTag.textContent = card.dataset.subpage ? '查看完整內容' : (card.dataset.external ? '前往網站 ↗' : '放大檢視');
+  imgWrap.appendChild(viewTag);
+});
+
+// ── SCROLL PROGRESS + STICKY FILTER SHADOW + BACK TO TOP ──
+const scrollProgressFill = document.getElementById('scrollProgressFill');
+const filterBarWrap = document.getElementById('filterBarWrap');
+const backToTop = document.getElementById('backToTop');
+
+function updateScrollUI() {
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+  scrollProgressFill.style.width = pct + '%';
+
+  if (filterBarWrap) {
+    filterBarWrap.classList.toggle('scrolled', scrollTop > 8);
+  }
+  backToTop.classList.toggle('show', scrollTop > 480);
+}
+
+window.addEventListener('scroll', updateScrollUI, { passive: true });
+updateScrollUI();
+
+// Track scroll progress inside open subpages too
+document.querySelectorAll('.subpage').forEach(panel => {
+  panel.addEventListener('scroll', () => {
+    const scrollTop = panel.scrollTop;
+    const docHeight = panel.scrollHeight - panel.clientHeight;
+    const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    scrollProgressFill.style.width = pct + '%';
+    backToTop.classList.toggle('show', scrollTop > 480);
+  }, { passive: true });
+});
+
+backToTop.addEventListener('click', () => {
+  const openPanel = document.querySelector('.subpage.open');
+  if (openPanel) {
+    openPanel.scrollTo({ top: 0, behavior: 'smooth' });
+  } else {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+});
+
+// ── LIGHTBOX ──
+const lightbox = document.getElementById('lightbox');
+const lightboxImg = document.getElementById('lightboxImg');
+const lightboxCaption = document.getElementById('lightboxCaption');
+const lightboxClose = document.getElementById('lightboxClose');
+
+// ── SUBPAGE MAP: card data-id → subpage element id ──
+const subpageMap = {
+  'samia':      'subpage-samia',
+  'snow':       'subpage-snow',
+  'growth':     'subpage-growth',
+  'dimei15':    'subpage-dimei15',
+  'chengting':  'subpage-chengting',
+  'qinglu':     'subpage-qinglu',
+  'book7':      'subpage-book7',
+  'book8':      'subpage-book8',
+  'book9':      'subpage-book9',
+  'book10v':    'subpage-book10',
+  'sanctuary':  'subpage-sanctuary',
+  'dimei14b':   'subpage-dimei14b',
+  'akijo':      'subpage-akijo',
+  'tajunyang':  'subpage-tajunyang',
+  '8dou':       'subpage-8dou',
+  'line':       'subpage-line',
+  'dimei13':    'subpage-dimei13',
+  'moon':       'subpage-moon',
+  'dimei14a':   'subpage-dimei14a',
+  // future subpages added here
+};
+
+document.querySelectorAll('.card').forEach(card => {
+  card.addEventListener('click', e => {
+    // External links: let browser open directly in new tab
+    if (card.dataset.external) return;
+
+    if (!e.shiftKey && !e.ctrlKey && !e.metaKey) {
+      e.preventDefault();
+      const subpageId = card.dataset.subpage;
+      if (subpageId && subpageMap[subpageId]) {
+        openSubpage(subpageMap[subpageId]);
+      } else {
+        // fallback: lightbox
+        const img = card.dataset.img;
+        const cap = card.dataset.caption;
+        if (img) {
+          lightboxImg.src = img;
+          lightboxImg.alt = localize(cap);
+          setLightboxCaption(cap, true);
+          lightbox.classList.add('open');
+          document.body.style.overflow = 'hidden';
+        }
+      }
+    }
+  });
+});
+
+function openSubpage(id) {
+  const panel = document.getElementById(id);
+  document.querySelectorAll('.subpage.open').forEach(p => p.classList.remove('open'));
+  panel.classList.add('open');
+  panel.scrollTop = 0;
+  document.body.style.overflow = 'hidden';
+  window.history.pushState({ subpage: id }, '', '#' + id);
+  if (typeof scrollProgressFill !== 'undefined') scrollProgressFill.style.width = '0%';
+  if (typeof backToTop !== 'undefined') backToTop.classList.remove('show');
+}
+
+function closeSubpage() {
+  document.querySelectorAll('.subpage.open').forEach(p => p.classList.remove('open'));
+  document.body.style.overflow = '';
+  if (window.location.hash) window.history.pushState({}, '', window.location.pathname + window.location.search);
+}
+
+function openCardById(id) {
+  if (subpageMap[id]) {
+    openSubpage(subpageMap[id]);
+    return;
+  }
+  closeSubpage();
+  const imgMap = {
+    snow:       { img: 'https://freight.cargo.site/w/900/q/75/i/D2831581970346089308103563623939/3.jpg',    cap: 'SNOW in Desert｜展覽視覺設計' },
+    growth:     { img: 'https://freight.cargo.site/w/900/q/75/i/I2831582142841593141361580785155/5.jpg',    cap: 'GROWTH UNBOUND｜展覽視覺設計' },
+    qinglu:     { img: 'https://freight.cargo.site/w/900/q/75/i/F2831582232935491197359030877699/7.jpg',    cap: 'Qinglu Liu Solo｜展覽視覺設計' },
+    dimei15b:   { img: 'https://freight.cargo.site/w/900/q/75/i/X2863675476228144689952935984643/book14.jpg', cap: '地味手帖第15期｜雜誌插畫' },
+    sansishimu: { img: 'https://freight.cargo.site/w/900/q/75/i/B2831814573624702800935478443523/freepik_-_seedance_720p_4-3_24fps_24089.jpg', cap: '品泓建設「叄拾睦」｜建案視覺設計' },
+  };
+  const d = imgMap[id];
+  if (d) {
+    lightboxImg.src = d.img;
+    lightboxImg.alt = localize(d.cap);
+    setLightboxCaption(d.cap);
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+}
+
+function restoreProjectFromUrl() {
+  const project = document.getElementById(window.location.hash.slice(1));
+  document.querySelectorAll('.subpage').forEach(panel => {
+    panel.classList.toggle('open', panel === project);
+  });
+  document.body.style.overflow = project?.classList.contains('subpage') ? 'hidden' : '';
+}
+window.addEventListener('popstate', restoreProjectFromUrl);
+restoreProjectFromUrl();
+
+lightboxClose.addEventListener('click', closeLightbox);
+lightbox.addEventListener('click', e => {
+  if (e.target === lightbox) closeLightbox();
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeLightbox(); closeSubpage(); }
+});
+
+function closeLightbox() {
+  lightbox.classList.remove('open');
+  document.body.style.overflow = '';
+  lightboxImg.src = '';
+}
+
+// Keep the original Chinese markup and apply the English copy to its text nodes.
+const englishCopy = {
+  "回到頂部": "Back to top",
+  "— 專注於 展覽・品牌・書籍・家居設計": "— Design for exhibitions, brands, books, and interiors",
+  "全部": "All",
+  "展覽": "Exhibitions",
+  "建案": "Property",
+  "書籍": "Books",
+  "品牌": "Branding",
+  "插畫": "Illustration",
+  "飯店": "Hotels",
+  "這個分類目前沒有作品": "No projects in this category yet",
+  "DUBAI SAMIA ART｜杜拜藝廊品牌設計": "DUBAI SAMIA ART · Gallery branding",
+  "杜拜藝廊品牌設計": "Dubai gallery branding",
+  "SNOW in Desert｜展覽視覺設計": "SNOW in Desert · Exhibition identity",
+  "展覽視覺設計": "Exhibition visual identity",
+  "GROWTH UNBOUND｜展覽視覺設計": "GROWTH UNBOUND · Exhibition identity",
+  "品泓建設「澄埕」｜建案視覺設計／接待中心": "Pinhong Development · Chengcheng · Visual identity and sales gallery",
+  "澄埕": "Chengcheng",
+  "品泓建設「澄埕」": "Chengcheng by Pinhong Development",
+  "建案視覺設計／接待中心": "Property identity and sales gallery",
+  "品泓建設「叁拾睦」｜建案視覺設計": "Pinhong Development · Sanshimu · Property visual identity",
+  "叁拾睦": "Sanshimu",
+  "品泓建設「叁拾睦」": "Sanshimu by Pinhong Development",
+  "建案視覺設計": "Property visual identity",
+  "地味手帖第15期 游牧聚落｜雜誌插畫牌卡設計": "Make Paths No. 15 · Nomadic Settlements · Illustrated cards",
+  "地味手帖15": "Make Paths No. 15",
+  "地味手帖第15期 游牧聚落": "Make Paths No. 15 · Nomadic Settlements",
+  "雜誌插畫牌卡設計": "Illustrated cards for Make Paths",
+  "Qinglu Liu Solo｜展覽視覺設計": "Qinglu Liu Solo · Exhibition identity",
+  "SANCTUARY OF FREEDOM｜展覽視覺設計": "SANCTUARY OF FREEDOM · Exhibition identity",
+  "台中「田中央飯店」｜客房手冊／軟裝設計": "Central Land Hotel, Taichung · Guest guide and interior styling",
+  "田中央飯店": "Central Land Hotel",
+  "台中「田中央飯店」": "Central Land Hotel, Taichung",
+  "客房手冊／軟裝設計": "Guest guide and interior styling",
+  "「8豆珈琲」｜視覺設計": "8 Beans Coffee · Visual design",
+  "8豆珈琲": "8 Beans Coffee",
+  "「8豆珈琲」": "8 Beans Coffee",
+  "視覺設計": "Visual design",
+  "開一間小書店第七年｜全書設計／插畫繪圖": "A Small Bookshop, Year Seven · Book design and illustration",
+  "小書店第七年": "A Small Bookshop, Year Seven",
+  "開一間小書店第七年": "A Small Bookshop, Year Seven",
+  "全書設計／插畫繪圖": "Book design and illustration",
+  "「AKIJO萩条」｜視覺／軟裝設計": "AKIJO · Visual design and interior styling",
+  "AKIJO萩条": "AKIJO",
+  "「AKIJO萩条」": "AKIJO",
+  "視覺／軟裝設計": "Visual design and interior styling",
+  "開一間小書店第八年｜全書設計／插畫繪圖": "A Small Bookshop, Year Eight · Book design and illustration",
+  "小書店第八年": "A Small Bookshop, Year Eight",
+  "開一間小書店第八年": "A Small Bookshop, Year Eight",
+  "開一間小書店第九年｜全書設計／插畫繪圖": "A Small Bookshop, Year Nine · Book design and illustration",
+  "小書店第九年": "A Small Bookshop, Year Nine",
+  "開一間小書店第九年": "A Small Bookshop, Year Nine",
+  "開一間小書店第十年｜全書設計／插畫繪圖": "A Small Bookshop, Year Ten · Book design and illustration",
+  "小書店第十年": "A Small Bookshop, Year Ten",
+  "開一間小書店第十年": "A Small Bookshop, Year Ten",
+  "地味手帖第13期「地區賽隊：地方愛的熱力展現」｜插畫設計": "Make Paths No. 13 · Local Teams · Illustration",
+  "地味手帖13": "Make Paths No. 13",
+  "地味手帖第13期": "Make Paths No. 13",
+  "「地區賽隊」插畫設計": "Local Teams illustrations",
+  "地味手帖第14期「成為望族」｜內容插畫設計": "Make Paths No. 14 · Becoming a Prominent Family · Editorial illustration",
+  "地味手帖14": "Make Paths No. 14",
+  "地味手帖第14期「成為望族」": "Make Paths No. 14 · Becoming a Prominent Family",
+  "內容插畫設計": "Editorial illustration",
+  "地味手帖第14期「台灣望族女子圖鑑」｜插畫設計": "Make Paths No. 14 · Women of Taiwan’s Prominent Families · Illustration",
+  "台灣望族女子圖鑑": "Women of Taiwan’s Prominent Families",
+  "地味手帖14期「台灣望族女子圖鑑」": "Make Paths No. 14 · Women of Taiwan’s Prominent Families",
+  "插畫設計": "Illustration",
+  "Sending Artistic Inscriptions to the Moon｜展覽視覺設計": "Sending Artistic Inscriptions to the Moon · Exhibition identity",
+  "地味手帖第15期 游牧聚落｜雜誌插畫": "Make Paths No. 15 · Nomadic Settlements · Editorial illustration",
+  "地味手帖15插畫": "Make Paths No. 15 illustration",
+  "雜誌插畫": "Magazine illustration",
+  "LINE客製化貼圖設計": "Custom LINE sticker design",
+  "LINE貼圖": "LINE stickers",
+  "LINE 客製化貼圖設計": "Custom LINE stickers",
+  "杉熹獨家設計": "Original SUNSEED design",
+  "貼圖": "Stickers",
+  "台中「田中央飯店」｜藝文空間設計": "Central Land Hotel, Taichung · Arts space design",
+  "田中央飯店藝文空間": "Central Land Hotel arts space",
+  "藝文空間設計": "Arts space design",
+  "← 返回": "← Back",
+  "SUNSEED / 設計 / DUBAI SAMIA ART": "SUNSEED / Design / DUBAI SAMIA ART",
+  "品牌識別設計 · 杜拜 2024": "Brand identity · Dubai, 2024",
+  "專案說明": "About the Project",
+  "在杜拜這充滿活力的藝術新興城市，「SAMIA ART」應運而生。「SAMIA ART」於2024年創立於杜拜，「SAMIA」是阿拉伯語中象徵著崇高與卓越的寓意，也是對藝廊空間賦予神聖使命的期許，將藝術體驗昇華為一種內心的平衡對話。": "Founded in Dubai in 2024, SAMIA ART takes its name from an Arabic word that evokes loftiness and excellence. The gallery’s founders envisioned a space where an encounter with art could become a quiet dialogue and a source of inner balance.",
+  "LOGO 設計靈感源自「窗」與「對畫的凝視」。Logo 中獨特的雙面透視造型，加幾何圖形的堆疊，是從「看畫的人」與「建築」的意象中汲取靈感，設計構築而成。Logo 的窗景、畫景的意象，都是隱喻藉由藝廊的場域，展開「藝術品與藝術創作」的深刻展覽演故事。": "The logo grew out of two ideas: the window and the act of looking at a painting. Layered geometric forms suggest both a viewer and a building. The interplay between a window frame and a picture frame hints at the stories the gallery can tell through its exhibitions.",
+  "窗戶，是光明的入口。我們將藝廊視為一座收納藝術的容器，Logo 中的窗戶結構，代表著藝術作品作為通往未知世界的視窗。它邀請觀者打開視野，看見平凡之外的無限可能。": "A window lets in light. I imagined the gallery as a home for art, and the window in the logo as an opening onto the unfamiliar. It invites viewers to look beyond the everyday.",
+  "凝視，是靈魂的對話。透過視覺透視，巧妙地將「看畫的人」的視角也融入設計裡。雙面透視的結構象徵著觀者與藝術品之間的雙向凝視。在我們凝視藝術品的同時，藝術品也在凝視我們，從而引發深層的心靈共鳴。": "The two-sided perspective makes room for the person looking at the artwork. It suggests a reciprocal gaze: as we look at art, it looks back at us and can stir something within.",
+  "這次的 LOGO 設計，從品牌核心中賦予 SAMIA ART 對藝術詮釋的品牌個性，使其不僅是展示作品的空間，更是引領觀者進入藝術殿堂的門戶。": "The identity expresses SAMIA ART’s approach to art and invites visitors into the gallery’s world.",
+  "很開心 SAMIA ART 的製作邀請，讓我曾經待過的第二故鄉阿聯酋，有更深刻與阿聯酋文化的連結。2024年7月開始和經營團隊討論，從LOGO提案為起點，設計了LOGO並通過提案，陸續完成藝廊招牌、名片、邀請卡等實體品牌。2025年開始，也陸續合作了相關展覽的視覺設計的製作。謝謝阿拉伯文化對設計師與美學的尊重，這是非常開心的合作過程，讓我更認識了這片土地。": "This commission deepened my connection to the UAE, my former home. I began talking with the team in July 2024. Once the logo was approved, I designed signage, business cards, and invitations. From 2025, we continued collaborating on exhibition identities. I appreciated the team’s respect for design and the chance to get to know the country better.",
+  "相關展覽視覺": "Related Exhibition Identities",
+  "SUNSEED / 設計 / SNOW in Desert": "SUNSEED / Design / SNOW in Desert",
+  "SAMIA ART · 展覽視覺設計 · 杜拜": "SAMIA ART · Exhibition visual identity · Dubai",
+  "SNOW in Desert 主視覺": "SNOW in Desert key visual",
+  "展覽視覺": "Exhibition graphics",
+  "展覽視覺 2": "Exhibition graphics 2",
+  "展覽邀請卡/門票": "Exhibition invitation and ticket",
+  "展覽主視覺": "Exhibition key visual",
+  "展覽旗幟": "Exhibition banner",
+  "展覽內容": "Exhibition materials",
+  "展覽說明": "Exhibition text",
+  "展覽全覽": "Exhibition overview",
+  "關於展覽": "About the Exhibition",
+  "設計說明": "Design Approach",
+  "在烈日之城，聽見雪落的聲音。在杜拜這座熱情的沙漠之都，冬天的寒意始終顯得遙遠。Samia Art 的第二檔展覽《Snow in Desert》，試圖打破地理與溫度的限制，邀請來自俄羅斯、吉爾吉斯、韓國與中國的藝術家，透過寫實與抽象的筆觸，將北國冰封大地的韌性與純淨帶進綠洲。": "In Dubai, the chill of winter can feel far away. Samia Art’s second exhibition brought together artists from Russia, Kyrgyzstan, South Korea, and China. Through realism and abstraction, their work brought the clarity and resilience of frozen northern landscapes into a desert city.",
+  "這是一場關於「自然靈魂」的轉譯視覺傳達，透過極簡且專業的設計架構，成功串聯起七位藝術家截然不同的創作風格，從寫實山巒的壯麗到抽象層次的冥想，讓《Snow in Desert》成為杜拜藝術季中一抹清冷而動人的藝術亮點。": "A pared-back visual system ties together the exhibition’s varied approaches, from imposing mountain scenes to meditative abstractions. The design gives Snow in Desert a quiet presence in Dubai’s exhibition season.",
+  "更多展覽設計": "More Exhibition Design",
+  "品牌識別設計": "Brand identity",
+  "SUNSEED / 設計 / GROWTH UNBOUND": "SUNSEED / Design / GROWTH UNBOUND",
+  "GROWTH UNBOUND 主視覺": "GROWTH UNBOUND key visual",
+  "展覽視覺 3": "Exhibition graphics 3",
+  "參展藝術作品 1": "Exhibited artwork 1",
+  "參展藝術作品 2": "Exhibited artwork 2",
+  "展覽現場": "Exhibition installation",
+  "在繁花盛放中，見證生命的無疆界。在文化交匯的杜拜，《Growth Unbound》是一場關於轉化與生命能量的慶典。展覽巧妙地連結了農曆新年的喜悅、情人節的浪漫，以及齋戒月（Ramadan）前的沉靜思維。作為本展的視覺設計師與參展藝術家，試圖捕捉自然界中「花卉」與「成長」的普世語言，創造出一場跨越國界的藝術對話。": "In Dubai, Growth Unbound brought together the joy of Lunar New Year, the romance of Valentine’s Day, and the reflection that precedes Ramadan. As both the visual designer and an exhibiting artist, I used flowers and growth as a shared language across cultures.",
+  "視覺設計的核心在於轉譯「向上生長」的動能，將傳統意象轉化為現代簡約的視覺語彙，選擇具備生命厚度的花卉藝術作品為基調，透過拱門曲線排版設計，象徵著「通道」與「橋樑」，連結人與自然、傳統與現代。並運用溫柔且具包容性的粉色調與暖大地色，呼應愛、希望與靈魂成長的意涵。": "I built the identity around the upward movement of growth, using floral artworks and arch-shaped layouts. The arches suggest passages between people and nature, tradition and contemporary life. Soft pinks and warm earth tones echo the exhibition’s themes of love, hope, and inner growth.",
+  "雙重身分：設計師與創作者": "Two Roles: Designer and Artist",
+  "在這場展覽中，我擁有雙重觸角。除了負責整體的視覺定調，我也以藝術家身分參展兩件作品。這種「由內而外」的參與，讓我更能深刻理解作品間的能量，並將這份感悟轉化為設計細節，讓觀者不論是在實體展場或數位媒介，都能感受到那份「成長不設限（Unbound）」的律動感。": "I set the visual direction and contributed two artworks. Taking part from both sides helped me understand the relationship between the works and carry their energy into details visitors could experience in the gallery and online.",
+  "SUNSEED / 書・雜誌 / 地味手帖第十五期": "SUNSEED / Books & Magazines / Make Paths No. 15",
+  "地味手帖第十五期": "No. 15",
+  "游牧聚落：探尋生活原真的可能性 · 雜誌插畫牌卡設計": "Nomadic Settlements: Exploring an authentic way to live · Illustrated reflection cards",
+  "地味手帖15 封面": "Make Paths No. 15 cover",
+  "牌卡 NO.1": "Card No. 1",
+  "牌卡 NO.2": "Card No. 2",
+  "牌卡 NO.3": "Card No. 3",
+  "牌卡 NO.4": "Card No. 4",
+  "牌卡 NO.5": "Card No. 5",
+  "雜誌內頁 1": "Magazine spread 1",
+  "雜誌內頁 2": "Magazine spread 2",
+  "關於這次創作": "About the Illustrations",
+  "第三次收到《地味手帖》編輯部的插畫邀請，對我而言是專業上的肯定。在參與「游牧聚落」特輯、繪製心理測驗牌卡的時刻，我自己剛從國外回到台灣，也正處於一段「居無定所」的游牧期。那種在不同城市空間切換、在流動中摸索自我的不確定感，與企劃核心簡直是不謀而合。謝謝生命巧妙的安排，讓我成為這份企劃最直接感同身受的轉譯者、創作者，也把這份對生命不安與期待，透過一筆一劃地轉化成療癒系的視覺插畫作品。": "This was my third illustration commission from Make Paths. I had just returned to Taiwan after living abroad and was moving between places without a settled home of my own. That uncertainty mirrored the issue’s theme. Drawing these reflection cards let me turn my unease and anticipation into something gentle that I could share.",
+  "這是一個從向外追巡走向內在安定的過程。當我們能夠全然與自己臨在的此時、此刻、此地，所有游牧之地都是家，也是名為生命的風景。不論身在何處，都期許我們擁有愛，愛著當下生活百態的能力。": "The cards follow a shift from searching outward to finding steadiness within. When we are fully present with ourselves, any place we pass through can feel like home. Wherever we are, I hope we can make room for all the ways life takes shape.",
+  "六張牌卡說明": "The Six Cards",
+  "「唯一需要前往的地方，就是這裡」": "“The only place you need to go is here.”",
+  "以「啟程」的姿態詮釋「歸來」。我畫了一個半背對畫面的人提著行李在尋路的狀態。地平線的遠方有飽滿的太陽，道路的兩旁有盛開的花海，我想將遠行的孤寂，轉換為天地萬物都在守護支持，陪伴游牧者。畫面上我刻意模糊了遠方的終點，將視覺焦點拉回腳下的路。隱喻一種「在此地、在此刻」，其實即已抵達的定錨。": "I used the moment of setting out to picture what it feels like to come home. A traveler carrying luggage looks for a way forward, with a full sun on the horizon and flowers along the road. I softened the destination and brought attention back to the path underfoot. The landscape keeps the traveler company, and the path itself becomes a place to arrive.",
+  "「只要行動，力量會自己長出來」": "“Take a step and strength will follow.”",
+  "對抗迷惘的方法是：跨越柵欄、邁出腳步。畫面中的人站在灰色道路上，前方隔著一道木柵欄，對岸則是盛開的花與遠方的房子。深灰色的路面代表目前的踏實與冷靜，而對岸溫暖的鵝黃大地則象徵著行動後的果實。力量並非在萬事具備後才產生，而是在「跨越柵欄」的瞬間，即能到觀之彼岸。": "A traveler stands on a gray road before a wooden fence. Beyond it lie flowers and a distant house. The gray suggests steadiness and composure, while the warm yellow land hints at what can grow from a first step. The moment of climbing over the fence is where courage begins.",
+  "「現在，就是擁有選擇的時刻」": "“You can choose, right here and now.”",
+  "游牧生活裡的片刻休憩，讓留白重新掌握生命的主導權。這張畫面採取了「拱門框景」構圖，將視覺延伸至窗外秋日般豐饒的暖色森林。設計上強調一種安靜的思考空間，色彩層次豐富。繁華的世界在窗之外，窗內的主角，依然保有自我選擇的領域。當我們能意識到自己有決定權，我們就開啟了擁有改變生命的力量。": "An arched opening frames a forest in warm autumn colors. I wanted the richness outside to coexist with a quiet place to think inside. In a life of movement, a pause can help us recognize the choices we still have and what we might do with them.",
+  "「關掉所有，聽自己的聲音」": "“Turn everything off and listen to yourself.”",
+  "在生命之流的靜謐中對焦心的頻率。畫面採用俯瞰的「上帝視角」，營造出一種超脫塵囂的孤獨美感。將生命隱喻成川流不息的河，我們坐在一葉扁舟中，獨自在蜿蜒的溪谷中靜心。在大江大海中的生命流動裡，若能清晰地傾聽內在的聲音即能順流航行。": "A bird’s-eye view shows a lone boat in a winding valley. I imagined life as a flowing river and the boat as a space for stillness. Listening inward can help us find our way with the current.",
+  "「在路上曬乾眼淚，悲傷的快樂的都可以」": "“Let the road dry your tears. Joy and sadness both belong here.”",
+  "溫柔接納旅行中的各種情緒緩衝。畫面設定在一個正在移動的車廂內，大片的方框車窗捕捉外界海天一色的景致。這是一個在旅途中靜心觀照的瞬間，色彩明亮而充滿希望，彷彿所有的情緒都能被這片海與光所包容。在移動前往他方的路上，所有的眼淚都會被風吹乾，所有的情緒都是生命風景的一部分。": "A wide window in a moving carriage frames sea and sky. I used bright, hopeful colors to suggest a moment when the light and the sea can hold whatever we are feeling. As we travel, the wind dries our tears, and each emotion becomes part of the landscape.",
+  "「愛自己，和正在過的生活」": "“Love yourself and the life you’re living.”",
+  "這是遊牧的終點，也是生命的核心主軸。畫面背景是一個壯闊飽滿的橘黃色夕陽，海平面倒映著碎金般的光芒。人物坐在舒適的椅子上，悠閒地翻閱書本，身旁有一瓶盛開的藍色花卉。光線不再是遠方前進的指引，而是籠罩著全身的溫暖洗禮。這是一個不再需要尋找，因為已經擁有的圓滿瞬間。": "A figure reads beside a vase of blue flowers. An orange sun scatters gold across the sea. Its light wraps the reader in warmth, evoking the moment a traveler realizes they already have what they were seeking.",
+  "創作後記": "Afterword",
+  "在創作過程中，這六張牌卡的文字與畫面都完整記錄了一個靈魂從「決定出發」、「跨出行動」、「握有選擇」、「內省聆聽」、「接納情緒」到最後「熱愛生活」的完整歷程。我也透過這次在畫畫、寫文字之中反覆療癒當時的自己。": "The six cards trace a journey from deciding to leave and taking action to recognizing choices, listening inward, accepting feelings, and coming to love daily life. Drawing and writing them helped me work through my own experience.",
+  "願這份作品，能給予正在「遊牧」或渴望「離開」的人一份力量。無論你正處於哪一個流動緩衝期，希望你都能在時而遊牧的生命裡，穩定地走在生命的核心主軸裡。": "I hope the cards offer strength to anyone on the move or longing to leave. Wherever you are in that transition, may you find a steady sense of what matters to you.",
+  "地味手帖 15：遊牧聚落，探尋生活原真的可能性": "Make Paths No. 15 · Nomadic Settlements: Exploring an Authentic Way to Live",
+  "★ 特製六款「游牧牌卡」，每本隨機贈送三款": "★ Six cards were made for this issue. Each copy includes three at random.",
+  "線上購買：": "Buy online",
+  "更多雜誌插畫合作": "More Magazine Illustration",
+  "地味手帖第14期": "Make Paths No. 14",
+  "「成為望族」插畫": "Becoming a Prominent Family illustrations",
+  "地味手帖14b": "Make Paths No. 14 portraits",
+  "「台灣望族女子圖鑑」": "Women of Taiwan’s Prominent Families",
+  "地味手帖第15期": "Make Paths No. 15",
+  "SUNSEED / 建案規劃 / 品泓建設「澄埕」": "SUNSEED / Property / Chengcheng by Pinhong Development",
+  "建案企劃・視覺設計・接待中心 · 台南": "Project planning, visual identity, and sales gallery · Tainan",
+  "澄埕 主視覺": "Chengcheng key visual",
+  "建案視覺 2": "Property graphics 2",
+  "建案視覺 3": "Property graphics 3",
+  "銷售展示中心": "Sales gallery",
+  "銷售展示中心設計": "Sales gallery design",
+  "施工圍籬 戶外看板": "Construction hoarding and billboard",
+  "建案理念": "Project Concept",
+  "「澄」，是清澈透亮的心境；「埕」，是傳統台灣建築中，匯聚家人情感、與鄰里交流的廟埕與院落。在台南這座充滿文化底蘊的城市，【澄埕】這個建案不只是販售一個居住空間，更是提倡一種回歸純粹、與人共好的生活提案。": "The first character in Chengcheng means clarity. The second evokes the temple forecourts and courtyards of traditional Taiwanese architecture, where families and neighbors gather. Set in Tainan, the development draws on those spaces to imagine a quieter, more communal way of living.",
+  "作為本案的企劃與視覺統籌，企劃核心是：如何將這份抽象的「在地生活感」與「建築工藝」，轉化為一套能夠貫穿預售期到完工期，且兼具說服力與美感的品牌視覺系統。": "I led project planning and visual direction, translating local ways of living and architectural craftsmanship into a cohesive identity that could carry the project from presales through completion.",
+  "從社群螢幕到銷售空間的無縫敘事": "From Social Media to the Sales Gallery",
+  "在長期的 FB 粉專經營與社群貼文設計中，我們捨棄了傳統房地產高冷、充滿數字的推銷語氣。轉而運用帶有生活感的情境插畫與排版，將生硬的建築工法、周邊機能，轉譯為好懂且充滿溫度的「台南日常圖鑑」，成功拉近建設公司與購屋者之間的心理距離。": "For Facebook, we used everyday scenes and an approachable editorial layout to explain construction methods and neighborhood amenities. The series read like an illustrated guide to daily life in Tainan and gave prospective buyers a more personal way to get to know the developer.",
+  "實體空間的視覺轉譯": "Bringing the Identity into Physical Space",
+  "從戶外的大型廣告看板、建案施工圍籬，到電子展板的介面設計，以極簡、現代且帶有自然氣息的視覺語彙，在車水馬龍的街道上，為澄埕建立起極具辨識度的高級感，讓施工期也成為品牌行銷的一環。": "Billboards, construction hoarding, and digital displays shared a clean, contemporary visual language with touches drawn from nature. That consistency gave Chengcheng a recognizable presence on a busy street and made the construction phase part of the brand experience.",
+  "我們期待與更多在地的建案，一起將充滿文化厚度與現代美學淬鍊成生活提案。歡迎各方合作。": "I welcome opportunities to work with local developments that bring cultural character and contemporary design into everyday life.",
+  "品泓建設官方粉專：": "Pinhong Development on Facebook",
+  "FB 貼文設計": "Facebook post design",
+  "建案電子展板設計": "Digital sales display",
+  "戶外看板設計": "Outdoor billboard",
+  "銷售展示中心模擬": "Sales gallery rendering",
+  "建案施工圍籬圖": "Construction hoarding",
+  "更多建案設計": "More Property Design",
+  "叄拾睦": "Sanshimu",
+  "品泓建設「叄拾睦」": "Sanshimu by Pinhong Development",
+  "SUNSEED / 設計 / Qinglu Liu Solo (劉清路)": "SUNSEED / Design / Qinglu Liu Solo Exhibition",
+  "劉清路個展": "Solo Exhibition",
+  "Finance · Nothingness · SAMIA ART · 展覽視覺設計 · 杜拜": "Finance · Nothingness · SAMIA ART · Exhibition visual identity · Dubai",
+  "Qinglu Liu Solo 主視覺": "Qinglu Liu Solo key visual",
+  "展覽網站 1": "Exhibition website 1",
+  "展覽網站 2": "Exhibition website 2",
+  "展覽主視覺海報": "Exhibition key visual poster",
+  "展覽邀請卡正反面": "Exhibition invitation, front and back",
+  "視覺設計說明": "Visual Design",
+  "本展視覺設計的核心在於：如何將「加密貨幣的理性邏輯」與「實體藝術的感性溫度」在視覺維度上完美鎔鑄。我精準提取了藝術家極具標誌性的「太空人」視覺符號作為視覺定錨。畫面中那閃耀著璀璨金屬光澤的頭盔，不僅承載了人類對未知宇宙的浪漫幻想，更隱喻著當代社會在物質與精神間的迷惘。": "The design brings together the logic of cryptocurrency and the emotional presence of physical art. I anchored it in Liu’s signature astronaut motif. The metallic helmet holds both a sense of wonder about the cosmos and the uncertainty of a society pulled between material and spiritual concerns.",
+  "面對極度飽和且充滿張力的主視覺圖像，我在字體與版面編排上選擇了高度的理性克制。透過洗鍊的無襯線字體與精準的空間留白，在畫面上創造出「Finance（金融）」與「Nothingness（虛無）」的對立與平衡，讓觀者在強烈的視覺衝擊後，仍能擁有一方沉靜思考的空間。": "I balanced the saturated key image with restrained sans-serif typography and carefully measured white space. The tension between the two gives the viewer room to reflect on the exhibition’s title, Finance · Nothingness.",
+  "跨媒材整合": "Design Across Media",
+  "專案涵蓋實體空間的牆面卡典、邀請卡，以及展覽網站 Banner 與社群媒體視覺。這套視覺語言能在不同載體中靈活轉換，既保有科技未來感，又不失頂級畫廊的沉穩格調。": "The identity extended from gallery wall lettering and invitations to website banners and social graphics. Across those formats, it kept both a futuristic edge and the composure of a gallery exhibition.",
+  "這套視覺設計不僅是一次跨媒材的完美整合，更深刻轉譯了藝術家遊走於傳統與創新之間，探討科技如何重塑藝術所有權與文化敘事的核心命題。在杜拜這座全球金融樞紐，此設計成功為「首例虛擬貨幣交易實體藝術」的歷史性時刻，建構了最具說服力與美學深度的視覺語彙。": "The visual system framed the artist’s questions about how technology reshapes art ownership and cultural storytelling. It also provided a visual context for the exhibition’s cryptocurrency transaction involving a physical artwork in Dubai.",
+  "展覽網站": "Exhibition website",
+  "展覽視覺海報": "Exhibition poster",
+  "邀請卡正反面": "Invitation, front and back",
+  "SUNSEED / 書・雜誌 / 開一間小書店第七年": "SUNSEED / Books & Magazines / A Small Bookshop, Year Seven",
+  "「晴耕雨讀」從心開始的一年 · 全書設計／插畫繪圖": "Qinggeng Yudu · A year of starting from the heart · Book design and illustration",
+  "開一間小書店第七年 封面": "A Small Bookshop, Year Seven cover",
+  "內頁 1": "Interior pages 1",
+  "內頁 2": "Interior pages 2",
+  "內頁 3": "Interior pages 3",
+  "內頁 4": "Interior pages 4",
+  "從心開始的一年": "A Year of Starting from the Heart",
+  "「晴耕雨讀」是一間在桃園的獨立書店，本書集結了主理人毓穗，邁入第七年的日常筆記與心境轉折。作為本書的全書視覺統籌與插畫家，我的核心思考在：如何讓讀者在翻開書頁的瞬間，彷彿走進書店，聞到書香、陽光草地與微風的氣息。": "Qinggeng Yudu is an independent bookshop in Taoyuan. This volume gathers owner Yusui’s journal entries and reflections from its seventh year. I wanted opening the book to feel like walking into the shop and catching the scent of books, grass in the sun, and a passing breeze.",
+  "封面的插畫設計以一家三口，在書店門前種下種子的概念為主，畫出一日一夜、一點一滴建造過程。內頁設計以日記為概念，把主理人每天的隨筆都整理成冊。閱讀完整本書，即能感受到晴耕雨讀式的經營理念，在一本書裡，看見一年的時光。": "The cover shows a family of three planting seeds outside the shop, an image of building something day by day. Inside, the layout follows the rhythm of a diary and lets a year of the bookshop’s life unfold through the owner’s entries.",
+  "封面裝幀與插畫語彙": "Cover Design and Illustration",
+  "捨棄了過度商業化的華麗包裝，我以帶有質樸手感、溫潤色彩的插畫貫穿全書。這些插畫不只是文字的配角，而是情緒的引導者。無論是一株植物、一個角落，都試圖還原書店裡那份最真誠、不造作的生活感。": "Hand-drawn textures and warm colors carry the illustrations through the book. A plant or a quiet corner can guide the reader into the mood of a passage and evoke the bookshop’s everyday character.",
+  "編排美學與留白節奏": "Layout and White Space",
+  "閱讀心靈散文需要沉澱的空間。在內文排版上，我極度重視版面的「呼吸感」（Whitespace）。透過精準的行距設定、柔和的字體選擇，以及圖文交錯的巧妙落位，讓讀者的視線得以在字裡行間緩慢散步，不會感到視覺壓迫。": "Reflective writing needs room to settle. I used generous line spacing, gentle typography, and a measured rhythm of text and image so readers could move through the book slowly.",
+  "從心出發的整體統籌": "From Concept to Print",
+  "從概念企劃的視覺化，到最終印刷檔的細節收斂，我將文字中的「靜」與插畫中的「暖」緊密結合。每一次的翻頁，都像是在與自己、與這間小書店進行一場安靜的對話。": "From the first concept to the final print files, I brought the stillness of the writing together with the warmth of the illustrations. Turning the pages feels like a quiet conversation with the bookshop and with yourself.",
+  "晴耕雨讀書籍介紹與購買：": "About the Books & Where to Buy",
+  "更多書籍／雜誌插畫合作": "More Book and Magazine Projects",
+  "SUNSEED / 書・雜誌 / 開一間小書店第八年": "SUNSEED / Books & Magazines / A Small Bookshop, Year Eight",
+  "「晴耕雨讀」有喜有悲的一年 · 全書設計／插畫繪圖": "Qinggeng Yudu · A year of joys and sorrows · Book design and illustration",
+  "開一間小書店第八年 封面": "A Small Bookshop, Year Eight cover",
+  "第八年書封設計、插畫 1": "Year Eight cover illustration 1",
+  "第八年書封設計、插畫 2": "Year Eight cover illustration 2",
+  "第八年書封設計、插畫 3": "Year Eight cover illustration 3",
+  "第八年書封設計、插畫 4": "Year Eight cover illustration 4",
+  "第八年書封設計、插畫": "Year Eight cover design and illustration",
+  "把生活還給書店，把時間留給家人": "Making Time for Family at the Bookshop",
+  "書封正面的插畫，描繪了主理人一家三口在書店內的桌子，共聚一桌吃飯聊天的日常切片。對許多人來說，晴耕雨讀是一間療癒的獨立書店；但對主理人一家人而言，這裡是他們的生活、他們的家。": "The front cover shows the owner’s family of three sharing a meal and talking around a table inside the shop. For visitors, Qinggeng Yudu is a welcoming independent bookshop. For the family, it is part of their daily life and home.",
+  "當卸下「營業中」的招牌，點亮一盞暖黃的桌燈，那些經營上的疲憊、現實的悲喜，都在這頓簡單的飯菜與家人的相伴中被溫柔地接住。我運用質樸的手感筆觸與溫潤的大地色調，去凝結這份書店日常最私密、最安靜的時刻——開店前與打烊後。讓觀者一眼就能感受到晴耕雨讀書店的靈魂，其實是源自於他們一家人彼此間深刻的愛與凝聚。": "When the open sign comes down and the table lamp comes on, a simple meal and the company of family soften the strains of running a shop. I used textured strokes and warm earth tones to hold that private moment before opening or after closing.",
+  "書底設計：女兒的書法字跡": "Back Cover: A Daughter’s Calligraphy",
+  "在封底的設計上，是將書店小主人（女兒）的書法字跡，直接作為封底的核心視覺。沒有任何一款完美的電腦字型，能比得上孩子那稚嫩、真誠且充滿生命力的筆觸。": "The bookshop owner’s daughter wrote the calligraphy on the back cover. Her young, lively brushwork gave the cover a personal quality that a typeface could never capture.",
+  "這行字呼應了「晴耕雨讀」與土地、自然共生的人文氣質，更隱喻著時間的流動，小女孩在書店的書香與歲月中逐漸長大，她的筆跡記錄了第八年的光陰，也完美承載書名中「有喜有悲」的純粹與釋然。": "Her handwriting reflects the shop’s connection to nature and records how she was growing up alongside it. It holds the sincerity and acceptance of a year with joys and sorrows.",
+  "有喜有悲的一年": "A Year of Joys and Sorrows",
+  "延續第七年的靜謐與初心，第八年的主題觸碰到生活與經營中最深刻的切面。作為這本書的全案視覺統籌與插畫家，我的設計不再只是單純地傳遞「美好」，而是要打造一個能夠溫柔接住各種情緒的「視覺容器」。": "Year Eight carries forward the intimacy of the previous book and looks more closely at daily life and the work of keeping a shop open. I wanted the visual design and illustrations to make room for a wider range of feelings.",
+  "獨立書店「晴耕雨讀」邁入第八年，主理人褪去了初創時的夢幻濾鏡，將一年中真實經歷的喜悅與悲傷、收穫與失去，坦然地揉入文字之中。面對這樣充滿生命重量的文本，我的設計是建構一個安穩且具備高度包容力的視覺場域，讓讀者在翻閱悲喜交加的故事時，依然能感受到被靈魂接納的安定感。": "The owner writes openly about the year’s joys, grief, gains, and losses. I used a steady, welcoming visual rhythm so readers could sit with those experiences as they turned the pages.",
+  "無論外面的世界經歷多少風雨與悲喜，只要有一桌熱飯、有家人相伴、有書本可以閱讀，這裡就是最安穩的避風港。": "A hot meal, time with family, and a book to read can make a place feel like a refuge through whatever the world brings.",
+  "更多地味手帖雜誌、書籍插畫合作": "More Make Paths and Book Projects",
+  "SUNSEED / 書・雜誌 / 開一間小書店第九年": "SUNSEED / Books & Magazines / A Small Bookshop, Year Nine",
+  "「晴耕雨讀」快樂是來自於逐漸實現重要目標的過程 · 全書設計／插畫繪圖": "Qinggeng Yudu · Happiness grows as we work toward meaningful goals · Book design and illustration",
+  "開一間小書店第九年 封面": "A Small Bookshop, Year Nine cover",
+  "日治新知識階層 插圖 1": "Illustration of the intellectual class under Japanese rule 1",
+  "日治新知識階層 插圖 2": "Illustration of the intellectual class under Japanese rule 2",
+  "日治新知識階層 插圖": "Illustration of the intellectual class under Japanese rule",
+  "內頁設計 3": "Interior layout 3",
+  "內頁設計 4": "Interior layout 4",
+  "在歲月的流轉中，靜才能點燃內心的微光": "Finding a Quiet Light in the Passing Years",
+  "「晴耕雨讀」的第九年，是一段關於復原與重新尋找意義的旅程。在經歷了疫情的動盪與至親離世的傷痛後，主理人透過文字不斷向內探尋生命的意義。作為本書的全書視覺設計與插畫家，這本書不需要喧嘩的視覺，而是需要一個安靜、溫暖且充滿靈魂厚度的容器，來承載這些關於時間、失去與重生的深刻思索。": "The ninth year was a time of recovery and renewed reflection. After the pandemic and the death of a loved one, the owner turned inward through writing. I wanted the design and illustrations to give these reflections on time, loss, and renewal a quiet, warm place to land.",
+  "純粹的插畫手感溫度與身心的呼吸空間": "Hand-Drawn Texture and Space to Breathe",
+  "封面：夜色中不滅的溫暖守候。": "The Cover: A Light That Stays On",
+  "有別於白日的明亮，我在書封插畫中選擇靜謐的情感山丘為主背景。在這高低起伏之間，冥想、看書，靜靜地過著日子。隱喻著無論外在世界如何劇烈變動，這間小書店始終是穩定等待大家來看書喝茶的地方。": "I set the cover among quiet hills at night. Between the slopes, people meditate, read, and go about their days. Whatever is happening outside, the bookshop is still there, waiting for people to stop in for a book and tea.",
+  "快樂是來自於逐漸實現重要目標的過程": "Happiness Grows as We Work Toward Meaningful Goals",
+  "《開一間小書店第九年》是一本從內到外高度整合的療癒之作。透過全書插畫的繪製與編排設計對話，將主理人真摯的生命獨白，轉譯為一本具備觸覺溫度與靈性深度的實體書。身為第三年設計書店的書籍，就像是跟一位老朋友一起對話、一起生活，願這本書，陪伴每一位翻開書頁的讀者，感受如本年度的標題所言，快樂的情緒其實隱藏在實踐的過程裡。": "The illustrations and layout work together to give the owner’s reflections a tangible, intimate form. By my third year designing the shop’s books, the collaboration felt like spending time with an old friend. I hope readers find what the year’s title points to: the happiness that can be found in doing the work itself.",
+  "SUNSEED / 書・雜誌 / 開一間小書店第十年": "SUNSEED / Books & Magazines / A Small Bookshop, Year Ten",
+  "「晴耕雨讀」過去、現在與未來 · 全書設計／插畫繪圖": "Qinggeng Yudu · Past, present, and future · Book design and illustration",
+  "開一間小書店第十年 封面": "A Small Bookshop, Year Ten cover",
+  "第十年封面設計 1": "Year Ten cover design 1",
+  "第十年封面設計 2": "Year Ten cover design 2",
+  "第十年封面設計 3": "Year Ten cover design 3",
+  "第十年封面設計": "Year Ten cover design",
+  "十年歲月，凝結成一處永恆的心靈棲息地": "Ten Years of Making a Place to Belong",
+  "「晴耕雨讀」邁入了第十年。這是一段漫長且充滿力量的旅程，作為這系列書籍的全書視覺設計、排版，很開心能參與這一刻里程碑。主理人在這本書中回望了過去的起伏、凝視著現在的平靜，並輕輕探問未來的模樣。在設計上，我和主理人一起討論，決定不追求華麗的紀念儀式，而是回歸書店最純粹的本質，用最安靜的視覺語彙，承載十年的時光重量。": "For the tenth anniversary, the owner looks back on the shop’s ups and downs, takes stock of the present, and wonders about its future. I worked with the owner to mark the milestone with a quiet visual language that felt true to the shop.",
+  "歲月靜好的視覺轉譯與呼吸感": "Giving a Decade Room to Breathe",
+  "將這十年的光陰，轉化為紙頁上充滿自然氣息與手感溫度的細節，讓整本書成為一本可以捧在手心裡慢慢閱讀的時光標本。將這十年來，每一年的封面都變成十年封面的一隅，作為這本書的全案視覺統籌與插畫家，我想打造能夠溫柔接住各種情緒的「視覺容器」。": "Details drawn from nature and a tactile finish make this a book to hold and read slowly. Each previous cover has a place within the anniversary cover, giving the memories and feelings of a decade somewhere to gather.",
+  "過去、現在與未來": "Past, Present, and Future",
+  "《開一間小書店第十年》不僅是對過去的總結，更是一份迎向未來的溫柔期許。透過從封面到內頁的一體化視覺統籌，我將主理人十年的堅持與感悟，轉譯為具備高度療癒能量的實體書。它完美延續了品牌一貫的真誠與溫暖，為這個十週年留下了最動人、也最深刻的紙上印記。": "The tenth volume looks back and looks ahead. From cover to interior, I carried the warmth of the shop into a printed record of the owner’s decade of work and reflection.",
+  "SUNSEED / 設計 / SANCTUARY OF FREEDOM": "SUNSEED / Design / SANCTUARY OF FREEDOM",
+  "唯心之野": "A Sanctuary Within",
+  "SAMIA ART · 雙人藝術展視覺整合設計 · 杜拜": "SAMIA ART · Visual identity for a two-artist exhibition · Dubai",
+  "SANCTUARY OF FREEDOM 主視覺": "SANCTUARY OF FREEDOM key visual",
+  "展覽海報/網站BANNER": "Exhibition poster and website banner",
+  "展覽邀請卡": "Exhibition invitation",
+  "展覽說明文": "Exhibition wall text",
+  "展覽海報": "Exhibition poster",
+  "唯心之野：一場源於內心，無朽的夢": "Sanctuary of Freedom: An Enduring Dream Born of the Heart",
+  "這是一場關於愛、旅途與內在庇護所的對話。《Sanctuary of Freedom 唯心之野》展出了藝術家郭俊池（Amanda Guo）的畫作與田子明（Ziming Tian）的佛造像雕塑。他們將共同走過的地理記憶與日常修行，化為繪畫與雕塑的雙重奏。": "The exhibition brings together Amanda Guo’s paintings and Ziming Tian’s Buddhist sculptures in a dialogue about love, travel, and inner refuge. Their shared journeys and everyday practices find expression in paint and sculpture.",
+  "在為這檔展覽進行視覺統籌時，我的首要任務是：不破壞這份私密的情感，而是為它打造一扇靜謐的窗，讓觀者得以輕柔地踏入他們的內在之野。在眾多充滿回憶的畫作中，我提取了充滿流動感的黃昏風景作為主視覺基底。它揉合了西方油畫的豐富色彩與東方書寫的氣韻，畫面中光影與情感共存的氛圍，完美契合了「自由庇護所」的核心概念。": "I wanted the identity to preserve the intimacy of the work and give viewers a quiet way into it. I chose a flowing dusk landscape as the key image. Its rich oil colors and calligraphic movement evoke the inner refuge at the heart of the exhibition.",
+  "為了呼應畫布上的情感流動以及雕塑中靜謐修行的意象，我在字體與版面編排上克制了過度的設計介入。透過現代洗鍊的無襯線字體與克制的文字層級，在畫面上留下充足的呼吸空間，讓「唯心之野，无朽的梦」宛如自然生長在畫布之上。": "Restrained sans-serif typography and a simple hierarchy leave room for the painting’s movement and the sculptures’ stillness. The title sits lightly in the image, as though it belongs to the landscape.",
+  "更多其他展覽": "More Exhibitions",
+  "SUNSEED / 書・雜誌 / 地味手帖14期「望族女子圖鑑」": "SUNSEED / Books & Magazines / Women of Taiwan’s Prominent Families",
+  "Make Paths Magazine 地味手帖第十四期「望族之後」 · 雜誌繪畫": "Make Paths Magazine No. 14 · In the Wake of Prominent Families · Editorial illustration",
+  "台灣望族女子圖鑑 主視覺": "Women of Taiwan’s Prominent Families key visual",
+  "黃金川": "Huang Jinchuan",
+  "林玉盞": "Lin Yuzhan",
+  "楊水萍": "Yang Shuiping",
+  "劉玉英": "Liu Yuying",
+  "雜誌內頁 3": "Magazine spread 3",
+  "雜誌內頁 4": "Magazine spread 4",
+  "褪去生硬，留下充滿靈魂的呼吸感": "Bringing Warmth to Historical Portraits",
+  "作為本期的插畫繪圖者，我採用了一種更具「療癒感」與「手感溫度」的視覺繪製，重塑歷史的溫度。傳統的黑白老照片往往給人距離感與嚴肅感。透過溫潤的色彩計畫與帶有肌理的筆觸，將那些昔日望族的合影與「女子圖鑑」如林玉琄、黃金川等人，轉化為充滿親和力與人情味的當代插畫。": "Warm colors and textured brushwork helped me bring the people in formal black-and-white photographs closer to contemporary readers. Family group photographs and portraits of women such as Lin and Huang became the starting point for the illustrations.",
+  "留白與靈魂的連結": "Space for the Reader",
+  "在人物面部特徵與背景處理上，我刻意進行了適度的簡化。這種視覺上的「留白」，不僅讓密集的雜誌內文有了喘息的空間，更為讀者保留了想像的餘地，促成一種跨越時空的靈魂共鳴。": "I simplified facial details and backgrounds to give the dense magazine layouts room to breathe. The space also lets readers imagine a connection with the people depicted across time.",
+  "文字與圖像的和諧律動": "The Rhythm of Text and Image",
+  "插畫是文章裝飾，也是視覺的「休息站」。它們以一種安靜、誠懇的姿態陪伴著文字，引導讀者以更平靜、包容的心態走進那個時代。": "The illustrations offer a quiet pause between passages and help readers enter the period with curiosity and care.",
+  "地味手帖 NO.14 望族之後：穿過時代脊簷的光": "Make Paths No. 14 · In the Wake of Prominent Families: Light Through the Eaves of Time",
+  "SUNSEED / 咖啡廳・飯店 / 「AKIJO萩条」": "SUNSEED / Cafés & Hotels / AKIJO",
+  "AKIJO 萩条": "AKIJO",
+  "視覺識別／軟裝設計": "Visual identity and interior styling",
+  "AKIJO萩条 主視覺": "AKIJO key visual",
+  "AKIJO萩条 視覺 1": "AKIJO visual 1",
+  "AKIJO萩条 視覺 2": "AKIJO visual 2",
+  "AKIJO萩条 視覺 3": "AKIJO visual 3",
+  "這個專案的詳細介紹文字仍在整理中，歡迎之後再回來查看完整內容。": "The full project story is in progress. Please check back for updates.",
+  "更多建案、咖啡廳、飯店作品": "More Property, Café, and Hotel Projects",
+  "SUNSEED / 咖啡廳・飯店 / 台中「田中央」": "SUNSEED / Cafés & Hotels / Central Land Hotel",
+  "田中央旅店": "Central Land Hotel",
+  "視覺整合／軟裝設計／藝文空間設計 · 台中": "Visual identity, interior styling, and arts space design · Taichung",
+  "田中央大門口": "Central Land Hotel entrance",
+  "田中央門口招牌設計": "Central Land Hotel entrance signage",
+  "田味食堂 餐廳命名/招牌設計": "Tianwei Restaurant naming and signage",
+  "田中央大門口・門口招牌設計": "Central Land Hotel entrance and signage",
+  "田味食堂 軟裝佈置": "Tianwei Restaurant interior styling",
+  "田味食堂 軟裝佈置／牆面吉祥物故事繪圖": "Tianwei Restaurant styling and illustrated mascot story",
+  "田味食堂 每月早餐MENU介紹": "Tianwei Restaurant monthly breakfast menu",
+  "客房手冊 封面 / 版型設計": "Guest guide cover and layout",
+  "田味食堂 每月早餐MENU介紹・客房手冊 封面／版型設計": "Tianwei Restaurant breakfast menu and guest guide design",
+  "田中央客房手冊設計": "Central Land Hotel guest guide design",
+  "客房手冊 封面／版型設計": "Guest guide cover and layout",
+  "田中央客房手冊封面": "Central Land Hotel guest guide cover",
+  "田中央客房手冊設計內容 1": "Central Land Hotel guest guide 1",
+  "田中央客房手冊設計內容 2": "Central Land Hotel guest guide 2",
+  "田中央客房手冊設計內容 3": "Central Land Hotel guest guide 3",
+  "田中央客房手冊設計內容 4": "Central Land Hotel guest guide 4",
+  "田中央客房手冊封面／設計內容": "Central Land Hotel guest guide cover and interiors",
+  "田中央飯店藝文空間設計": "Central Land Hotel arts space design",
+  "跨越時光的在地溫度": "Local Warmth That Endures",
+  "田中央旅店是一個提供住宿的空間，也像是一扇帶領旅人認識在地風土的窗。在這個專案中，我是視覺設計師，也是品牌體驗的構築者。我的任務是將「田中央」這質樸、復古且充滿人情味的品牌精神，揉合進旅客從入住到用膳、從實體空間到數位社群的每一個體驗中。": "Central Land Hotel offers travelers a way into the character of the neighborhood. I carried its unpretentious, vintage warmth through the guest experience, from check-in and meals to the interiors and social media.",
+  "把在地的人情味，化為旅人最安心的停泊": "Making Travelers Feel at Home",
+  "Logo 中獨特的雙面透視造型，加幾何圖形的堆疊，是從「看畫的人」與「建築」的意象中汲取靈感，設計構築而成。Logo的窗景、畫景的意象都是隱喻藉由場域，展開一場又一場「人與空間」的深刻故事。": "Layered geometric shapes give the logo a two-sided perspective inspired by a person looking at a picture and by architectural forms. The window and picture motifs suggest the stories that unfold between people and places.",
+  "二樓餐廳「田味食堂」": "Tianwei Restaurant on the Second Floor",
+  "在二樓的「田味食堂」，我將平面插畫的魔力延伸至立體空間。透過牆面的品牌吉祥物故事繪圖與整體的軟裝佈置，我為餐廳定調了輕鬆、溫馨的用餐氛圍，讓旅客在享用在地美食的同時，也能在視覺上獲得充滿童趣與療癒的沉浸式體驗。": "For the restaurant, I extended the illustrations into the room itself. Wall graphics tell the mascot’s story, while the styling creates an easygoing setting for guests to enjoy local food.",
+  "從平面到空間，打造有溫度的全方位體驗": "Carrying the Visual Identity into the Space",
+  "房間內的「客房手冊」是旅人進房後，與飯店的第一次深度對話。我和插畫家阿施合作，運用帶有手感溫度的插畫、溫潤的編排風格，繪製了周邊地圖與飯店指南。讓這本手冊不僅是資訊的載體，更像是一封在地朋友寫給旅人的歡迎信。": "I worked with illustrator A-Shih on the guest guide, pairing hand-drawn images with a warm editorial layout for the neighborhood map and hotel information. It reads like a welcome letter from a local friend.",
+  "歷久彌新的品牌資產": "A Brand Identity Built to Last",
+  "好的品牌設計需要透過持續的對話來發酵。從2017年起大約兩年的粉專經營期間，我將這份「田中央」獨有的質樸語氣轉化為社群圖文，成功在數位媒體中延續了實體空間的溫度，為飯店累積了極具黏著度的忠實客群。": "Starting in 2017, I managed the hotel’s Facebook page for about two years. The writing and images carried the warmth of the physical space online and helped the hotel build a loyal following.",
+  "至今來到 2026 年，田中央旅店依然沿用著我所規劃的客房手冊、空間視覺與軟裝基調。在快速變遷的旅宿業中，長達九年的持續使用，是對這份設計最高的肯定。它證明了好的設計不需要迎合短暫的潮流，只要精準捕捉並放大品牌的核心靈魂，就能成為跨越時間、歷久彌新的經典資產。": "As of 2026, the hotel still uses the guest guide, spatial graphics, and styling direction I designed. Nine years of use show how a design grounded in the character of a place can endure.",
+  "田中央旅店官網：": "Central Land Hotel website",
+  "SUNSEED / 咖啡廳・飯店 / 「8豆珈琲」": "SUNSEED / Cafés & Hotels / 8 Beans Coffee",
+  "LOGO 設計": "Logo design",
+  "8豆珈琲 主視覺": "8 Beans Coffee key visual",
+  "8豆珈琲 視覺 1": "8 Beans Coffee visual 1",
+  "8豆珈琲 視覺 2": "8 Beans Coffee visual 2",
+  "8豆珈琲 LOGO 應用 1": "8 Beans Coffee logo application 1",
+  "8豆珈琲 LOGO 應用 2": "8 Beans Coffee logo application 2",
+  "8豆珈琲 LOGO 應用 3": "8 Beans Coffee logo application 3",
+  "SUNSEED / 杉熹獨家設計 / LINE 貼圖設計": "SUNSEED / Original Design / LINE Stickers",
+  "LINE 角色設計、貼圖": "LINE Character Design and Stickers",
+  "客製化 LINE 貼圖設計 · 杉熹獨家設計": "Custom LINE stickers · Original SUNSEED design",
+  "貓咪咚咚 角色設計": "Dong Dong the cat · Character design",
+  "LINE貼圖 客製化文字、貼圖畫面 1": "LINE sticker artwork and custom lettering 1",
+  "可愛風角色設計": "Cute character design",
+  "可愛風 角色設計｜LINE貼圖 客製化文字、貼圖畫面": "Cute characters · LINE sticker art and custom lettering",
+  "日系漫畫風角色設計": "Manga-inspired character design",
+  "LINE貼圖 客製化文字、貼圖畫面 2": "LINE sticker artwork and custom lettering 2",
+  "日系漫畫風角色設計｜LINE貼圖 客製化文字、貼圖畫面": "Illustrated character design",
+  "插畫風格角色設計": "Ugly-cute character design",
+  "萌醜風格角色設計": "Illustrated and ugly-cute characters for custom LINE stickers",
+  "插畫風格 角色設計 客製LINE貼圖｜萌醜風格 角色設計 客製LINE貼圖": "Character design",
+  "角色設計": "LINE sticker artwork and custom lettering 3",
+  "LINE貼圖 客製化文字、貼圖畫面 3": "Character design · LINE sticker artwork and lettering",
+  "角色設計｜LINE貼圖 客製化文字、貼圖畫面": "Character variations",
+  "角色設計延伸": "Additional LINE sticker designs",
+  "LINE貼圖延伸畫面": "Additional LINE sticker artwork",
+  "每一款 LINE 貼圖角色，都從草圖、表情變化到最終的貼圖排版，一手包辦完整設計流程。從萌系到日系漫畫風，依照客戶的品牌個性與想傳達的情緒語氣，量身打造專屬的角色與表情包。": "I design each sticker set from the first sketches through expressions and final layouts. Styles range from cute to manga-inspired, with characters and reactions tailored to the client’s voice and the emotions they want to share.",
+  "更多杉熹設計 原創LINE貼圖：": "More original SUNSEED LINE stickers",
+  "更多杉熹獨家設計": "More Original SUNSEED Designs",
+  "SUNSEED / 書・雜誌 / 地味手帖第十三期": "SUNSEED / Books & Magazines / Make Paths No. 13",
+  "地區賽隊：地方愛的熱力展現": "Local Teams: The Passion Behind Community Sports",
+  "Make Paths Magazine 地味手帖第十三期 · 雜誌繪畫": "Make Paths Magazine No. 13 · Editorial illustration",
+  "地味手帖13 封面": "Make Paths No. 13 cover",
+  "柔道過肩摔插畫": "Illustration of a judo shoulder throw",
+  "角力壓制插畫": "Illustration of a wrestling pin",
+  "地味手帖13期 內頁插畫設計": "Make Paths No. 13 interior illustration",
+  "《地味手帖 NO.13 地區賽隊》內頁插畫設計": "Interior illustration for Make Paths No. 13 · Local Teams",
+  "競技場上的溫柔濾鏡": "A Gentler View of the Arena",
+  "面對「柔道」與「角力」這樣充滿力量與對抗性的主題，我思考如何在展現競技體育精神的同時，也保持雜誌一貫溫潤、充滿人文關懷的閱讀氛圍。": "Judo and wrestling are intense, physical sports. I wanted to capture that competitive spirit while keeping the warm, human tone of the magazine.",
+  "用色彩與肌理，柔軟剛硬的賽場": "Softening the Arena Through Color and Texture",
+  "我使用質樸手感與幾何色塊的視覺語彙，在描繪柔道的「過肩摔」或角力的「壓制」動作時，製造反差的溫柔張力。透過簡化的五官與帶有顆粒質感的筆觸，將賽場上的肅殺之氣轉化為一種純粹的、對運動的專注與熱愛。這種略帶「萌感」與質樸的繪畫風格，拉近了專業賽事與一般讀者之間的心理距離。": "I used textured strokes and geometric color blocks for moves such as the judo shoulder throw and the wrestling pin. Simplified faces emphasize focus and love for the sport, making the action approachable for readers who may be new to it.",
+  "高飽和的幾何舞台": "A Bold Geometric Arena",
+  "在背景處理上，我大膽使用了高飽和度的對比色（如明黃與洋紅的柔道墊、湛藍與正紅的角力場）。這些大面積的純色幾何區塊，不僅在視覺上極具現代感，更為雜誌密集的資訊方塊（如賽制說明、規則筆記）提供了完美的承載空間與「留白」餘地。": "Bright yellow and magenta mats and blocks of blue and red give the illustrations energy. The solid shapes also leave space for dense information about rules and competition formats.",
+  "這系列插畫成功完成了輔助文章的功能，更成為該期雜誌中極具視覺記憶點的亮點。透過我的繪畫風格轉譯，將生硬的賽規與激烈的賽場被賦予了充滿溫度的色彩，讓讀者在翻閱的過程中，能深刻感受到屬於台灣在地運動員的質樸與熱血。": "The illustrations give readers a visual way into the rules and action, while conveying the dedication and energy of Taiwan’s local athletes.",
+  "關於本期：地區賽隊": "About This Issue: Local Teams",
+  "這一期，我們先從日治時期地區運動與比賽的興起開始談，探看「會打棒球就有工作」的運動時代背景是如何形成。接著把眼光聚焦於歐美國家，在同樣大時代底下，地區運動如何在英國打破階級藩籬、在美國對抗種族歧視、在德國成為融合新舊住民的計畫，明示著運動在改變國家和社會之前，每個人的參與早已產生意義。": "The issue begins with the rise of regional sports under Japanese rule and the era when baseball could open doors to employment. It then looks at how local sports crossed class lines in Britain, challenged racial discrimination in the United States, and helped bring established and newer residents together in Germany.",
+  "看見賽事中的心理抗衡、電影中的人地關係、場邊的精采瞬間，十足過癮的看盡賽隊比賽的方方面面。正值暑熱，一起來看地區賽隊的汗和淚，如何開展另一種歸屬於地方的動能量！": "From the mental contest between competitors to sports in film and moments on the sidelines, the issue explores how the effort and emotion of local teams can deepen a sense of belonging.",
+  "地味手帖 NO.13 地區賽隊：地方愛的熱力展現": "Make Paths No. 13 · Local Teams: The Passion Behind Community Sports",
+  "SUNSEED / 設計 / 云章寄月・星沙载道": "SUNSEED / Design / Sending Artistic Inscriptions to the Moon",
+  "云章寄月": "Sending Artistic Inscriptions to the Moon",
+  "星沙载道": "Carrying the Dao Across Starry Sands",
+  "展覽內容 1": "Exhibition materials 1",
+  "展覽內容 2": "Exhibition materials 2",
+  "東方哲思與沙漠星辰的跨時空對話": "East Asian Philosophy and the Desert Night Sky",
+  "寄託了東方文人對自然與宇宙的浪漫幽思，「星沙載道」呼應了杜拜這座沙漠之城，廣袤無垠的地理意象。2025 Dubai International Calligraphy and Painting Art Exhibition 的視覺設計，是在杜拜 Samia Art Gallery 的現代空間中，搭建東方傳統書畫美學與中東在地文化的視覺橋樑。": "The exhibition title evokes the contemplation of nature and the cosmos in East Asian literati traditions and the vastness of Dubai’s desert. For the 2025 Dubai International Calligraphy and Painting Art Exhibition at Samia Art Gallery, I brought traditional calligraphy and painting into conversation with the gallery’s contemporary setting and its Middle Eastern context.",
+  "專案涵蓋實體空間的牆面卡典、邀請卡等，以及網站 Banner 與社群媒體視覺。它不僅精準傳達了主辦方推廣書畫藝術的初衷，也讓來自世界各地的觀者，在步入展場的瞬間，便能感受到那份跨越星沙的東方禪意。": "The design extended from wall lettering and invitations to website banners and social graphics. It carried the organizers’ aim of sharing calligraphy and painting with an international audience into the gallery and online.",
+  "SUNSEED / 書・雜誌 / 地味手帖第十四期「成為望族」": "SUNSEED / Books & Magazines / Make Paths No. 14 · Becoming a Prominent Family",
+  "望族之後": "In the Wake of Prominent Families",
+  "Make Paths Magazine 地味手帖第十四期 · 內頁插畫設計": "Make Paths Magazine No. 14 · Editorial illustration",
+  "地味手帖14 封面": "Make Paths No. 14 cover",
+  "五大家族 插圖": "Illustration of the five prominent families",
+  "日治新知識階層 插圖・五大家族 插圖": "Illustrations of the intellectual class under Japanese rule and the five prominent families",
+  "內頁插畫設計": "Editorial illustration",
+  "穿梭時光的溫柔轉譯": "A Gentle Way into the Past",
+  "作為本期的插畫繪圖者，我並未採用絕對寫實的歷史復刻，而是刻意採用了一種更具「療癒感」、「手感溫度」的視覺策略。": "I used tactile, warm illustrations to interpret the historical material for this issue.",
+  "重塑歷史的溫度": "Bringing Warmth to Historical Images",
+  "傳統的黑白老照片往往給人距離感與嚴肅感。透過溫潤的色彩計畫與帶有肌理的筆觸，將那些昔日望族的合影與「女子圖鑑」，如林玉琄、黃金川等人，轉化為充滿親和力與人情味的當代插畫。": "Warm colors and textured marks bring a sense of familiarity to formal black-and-white photographs. I used portraits and family group images, including those of Lin and Huang, as starting points for contemporary illustrations.",
+  "在編輯排版的考量下，插畫不只是文章的附屬裝飾，而是視覺的「休息站」。它們以一種安靜、誠懇的姿態陪伴著文字，引導讀者以更平靜、包容的心態走進那個時代。": "In the layout, the illustrations give readers a quiet pause between passages and invite them into the period with curiosity and care.",
+  "猶如地方之鑰，開啟地區發展和歷史脈絡的地方望族，是穿過時代脊簷的光。": "These families offer a way into the history of their communities and how those places developed.",
+  "查看完整內容": "View project",
+  "前往網站 ↗": "Visit website ↗",
+  "放大檢視": "Enlarge image",
+  " — Shift+Click 開啟原始連結": " — Shift-click to open the original link"
+};
+const languageStorageKey = 'chenyi-design-language';
+let language = 'zh-TW';
+let activeCaption = '';
+let captionHasLinkHint = false;
+
+function localize(text) {
+  return language === 'en' && Object.hasOwn(englishCopy, text) ? englishCopy[text] : text;
+}
+
+function setLightboxCaption(caption, hasLinkHint = false) {
+  activeCaption = caption;
+  captionHasLinkHint = hasLinkHint;
+  lightboxCaption.textContent = localize(caption)
+    + (hasLinkHint ? localize(' — Shift+Click 開啟原始連結') : '');
+}
+
+const localizedText = [];
+const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+while (walker.nextNode()) {
+  const node = walker.currentNode;
+  if (node.parentElement.closest('script, style')) continue;
+  const original = node.nodeValue.trim();
+  if (Object.hasOwn(englishCopy, original)) {
+    localizedText.push({ node, original, initial: node.nodeValue });
+  }
+}
+
+const localizedAttributes = [];
+document.querySelectorAll('[alt], [aria-label]').forEach(element => {
+  for (const name of ['alt', 'aria-label']) {
+    const original = element.getAttribute(name);
+    if (original && Object.hasOwn(englishCopy, original)) {
+      localizedAttributes.push({ element, name, original });
+    }
+  }
+});
+
+const languageButtons = document.querySelectorAll('[data-language]');
+function setLanguage(nextLanguage) {
+  language = nextLanguage === 'en' ? 'en' : 'zh-TW';
+  document.documentElement.lang = language;
+  for (const { node, original, initial } of localizedText) {
+    node.nodeValue = initial.replace(original, () => localize(original));
+  }
+  for (const { element, name, original } of localizedAttributes) {
+    element.setAttribute(name, localize(original));
+  }
+  for (const button of languageButtons) {
+    button.setAttribute('aria-pressed', String(button.dataset.language === language));
+    button.parentElement.setAttribute('aria-label', language === 'en' ? 'Site language' : '網站語言');
+  }
+  if (lightbox.classList.contains('open')) {
+    lightboxImg.alt = localize(activeCaption);
+    setLightboxCaption(activeCaption, captionHasLinkHint);
+  }
+  try { localStorage.setItem(languageStorageKey, language); } catch {}
+}
+
+let savedLanguage;
+try { savedLanguage = localStorage.getItem(languageStorageKey); } catch {}
+const requestedLanguage = new URLSearchParams(window.location.search).get('lang');
+setLanguage(['en', 'zh-TW'].includes(requestedLanguage) ? requestedLanguage : savedLanguage);
+languageButtons.forEach(button => {
+  button.addEventListener('click', () => {
+    if (new URLSearchParams(window.location.search).has('lang')) {
+      const url = new URL(window.location.href);
+      url.searchParams.set('lang', button.dataset.language);
+      window.history.replaceState(window.history.state, '', url);
+    }
+    setLanguage(button.dataset.language);
+  });
+});
+</script>
+
+</body>
+</html>
